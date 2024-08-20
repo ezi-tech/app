@@ -25,6 +25,6 @@ export default function middleware(req: NextRequest) {
   if (SOKO_HOSTNAMES.includes(domain)) {
     return NextResponse.rewrite(new URL("/ezisoko.shop", req.url));
   } else if (FRESH_HOSTNAMES.includes(domain)) {
-    return NextResponse.rewrite(new URL("/ezisoko.shop", req.url));
+    return NextResponse.rewrite(new URL("/ezifresh.shop", req.url));
   }
 }
