@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Ezifresh",
+    "slug": "ezifresh",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "ezifresh",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ezifarmer.ezifresh"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ezifarmer.ezifresh"
+    },
+    "plugins": [
+      "expo-router",
+      ["react-native-bootsplash", { "assetsDir": "assets/bootsplash" }]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "tsconfigPaths": true
+    }
+  }
+}
