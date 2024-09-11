@@ -8,6 +8,9 @@
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "build:android": "turbo build:android"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
