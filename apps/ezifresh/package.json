@@ -11,7 +11,7 @@
     "ios": "expo run:ios",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "build:android": "eas build --local -p android --profile development --output=ezifreshartifacts/android.apk"
+    "build:android": "eas build --local -p android --profile development --non-interactive --output=ezifreshartifacts/android.apk"
   },
   "jest": {
     "preset": "jest-expo"
