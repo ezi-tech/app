@@ -10,7 +10,8 @@ runs:
         cache: "yarn"
 
     - shell: bash
-      run: yarn add -g turbo
+      run: | 
+        npm i -g yarn turbo eas-cli
 
     - shell: bash
       run: yarn install
