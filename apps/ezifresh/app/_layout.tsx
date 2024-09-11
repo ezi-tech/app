@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { useEffect } from "react";
 import Bootsplash from "react-native-bootsplash";
 import "react-native-reanimated";
+import "../global.css";
 
 export default function RootLayout() {
   const [loaded] = useFonts({

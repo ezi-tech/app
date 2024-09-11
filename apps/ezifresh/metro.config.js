@@ -1,8 +1,12 @@
 // Learn more: https://docs.expo.dev/guides/monorepos/
 const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
 
-const config = withMonorepoPaths(getDefaultConfig(__dirname));
+const config = withNativeWind(withMonorepoPaths(getDefaultConfig(__dirname)), {
+  input: "./global.css",
+  configPath: "./tailwind.config.ts",
+});
 
 // XXX: Resolve our exports in workspace packages
 // https://github.com/expo/expo/issues/26926
