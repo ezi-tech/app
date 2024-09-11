@@ -1,9 +1,20 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import FeatherIcons from "@expo/vector-icons/Feather";
+import { type IconProps } from "@expo/vector-icons/build/createIconSet";
+import { type ComponentProps } from "react";
+
+function TabBarIcon({
+  style,
+  ...rest
+}: IconProps<ComponentProps<typeof FeatherIcons>["name"]>) {
+  return (
+    <FeatherIcons size={28} style={[{ marginBottom: 0 }, style]} {...rest} />
+  );
+}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -11,24 +22,46 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-      }}>
+        tabBarStyle: {
+          height: 60,
+        }
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name="home" color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name="search" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="cart"
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="shopping-cart" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="more"
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="user" color={color} />
           ),
         }}
       />
