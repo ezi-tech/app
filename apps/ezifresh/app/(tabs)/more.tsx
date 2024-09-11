@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function MoreScreen() {
   return (
     <SafeAreaView>
-      <Text className="text-red-500 text-3xl">This is the home screen</Text>
+      <Text className="text-red-500 text-3xl">This is the more details screen</Text>
     </SafeAreaView>
   )
 }
