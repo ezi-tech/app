@@ -3,15 +3,21 @@ description: "Common setup steps for Actions"
 
 runs:
   using: composite
-  steps:        
+  steps:
     - uses: actions/setup-node@v4
       with:
         node-version: 20
         cache: "yarn"
 
     - shell: bash
-      run: | 
-        npm i -g yarn turbo eas-cli
+      run: |
+        npm i -g yarn turbo
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
 
     - shell: bash
       run: yarn install
