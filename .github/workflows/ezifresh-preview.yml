@@ -14,6 +14,7 @@ permissions:
 
 env:
   CI: true
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
 jobs:
   preview:
