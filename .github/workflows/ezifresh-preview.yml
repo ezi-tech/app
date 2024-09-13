@@ -32,12 +32,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
-
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
         with:
@@ -46,7 +40,9 @@ jobs:
 
       - name: Generate APK
         run: |
-          yarn build:android --filter ezifresh
+          cd apps/ezifresh
+          npx expo prebuild --clean
+          eas build --local -p android --profile development --output=ezifreshartifacts/android.apk
 
       - name: Cache APK build artifacts
         uses: actions/cache@v3

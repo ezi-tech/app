@@ -25,5 +25,5 @@
     "turbo": "^2.1.1",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@ezi/prettier-config"
 }

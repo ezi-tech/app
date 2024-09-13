@@ -10,8 +10,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "test": "jest --watchAll",
-    "lint": "expo lint",
-    "build:android": "eas build --local -p android --profile development --non-interactive --output=ezifreshartifacts/android.apk"
+    "lint": "expo lint"
   },
   "jest": {
     "preset": "jest-expo"
@@ -68,5 +67,6 @@
         "expo-splash-screen"
       ]
     }
-  }
+  },
+  "prettier": "@ezi/prettier-config"
 }
