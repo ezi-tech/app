@@ -1,0 +1,5 @@
+{
+  "extends": "@ezi/tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["node_modules"]
+}
