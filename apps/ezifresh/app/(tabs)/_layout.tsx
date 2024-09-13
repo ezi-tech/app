@@ -17,12 +17,12 @@ function TabBarIcon({
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const{ colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors[colorScheme].tint,
         headerShown: false,
         tabBarStyle: {
           height: 60,
