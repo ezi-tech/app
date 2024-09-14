@@ -8,11 +8,22 @@
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "build:android": "turbo build:android"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20.16.0"
+  },
+  "packageManager": "pnpm@9.10.0",
   "devDependencies": {
-    "@types/node": "^22.4.1"
-  }
+    "@ezi/prettier-config": "workspace:*",
+    "@turbo/gen": "^2.1.1",
+    "prettier": "catalog:",
+    "turbo": "^2.1.1",
+    "typescript": "catalog:"
+  },
+  "prettier": "@ezi/prettier-config"
 }
