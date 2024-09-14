@@ -12,7 +12,7 @@ const INITIAL_TIMER = 15;
 export default function OTPScreen() {
   const { signUp } = useSignUp();
   const { signIn, setActive } = useSignIn();
-  const { email, type, emailAddressId } = useLocalSearchParams();
+  const { email, type, phoneNumberId } = useLocalSearchParams();
   const router = useRouter();
   const [code, setCode] = useState("");
   const [timer, setTimer] = useState(INITIAL_TIMER);
@@ -22,15 +22,15 @@ export default function OTPScreen() {
   const handleOtpFilled = async (text: string) => {
     try {
       if (type === "signUp") {
-        const response = await signUp?.attemptEmailAddressVerification({ code: text });
-
+        const response = await signUp?.attemptPhoneNumberVerification({ code: text });
+        console.log(JSON.stringify(response, null, 2));
         if (response?.status === "complete") {
           await setActive!({ session: response.createdSessionId });
           router.replace("/(tabs)/");
         }
       } else {
         const response = await signIn?.attemptFirstFactor({
-          strategy: "email_code",
+          strategy: "phone_code",
           code: text,
         });
 
@@ -48,11 +48,11 @@ export default function OTPScreen() {
     try {
       setTimer(INITIAL_TIMER);
       if (type === "signUp") {
-        await signUp?.prepareEmailAddressVerification({ strategy: "email_code" });
+        await signUp?.preparePhoneNumberVerification({ strategy: "phone_code" });
       } else {
         await signIn?.prepareFirstFactor({
-          strategy: "email_code",
-          emailAddressId: Array.isArray(emailAddressId) ? emailAddressId[0] : emailAddressId,
+          strategy: "phone_code",
+          phoneNumberId:  Array.isArray(phoneNumberId) ? phoneNumberId[0] : phoneNumberId,
         });
       }
     } catch (error) {

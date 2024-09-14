@@ -70,16 +70,16 @@ export default function SignUpScreen() {
           firstName: name,
           lastName: name,
           emailAddress: email,
+        phoneNumber: phoneNumber,
         });
 
         if (signUpAttempt?.status === "missing_requirements") {
-          await signUp?.prepareEmailAddressVerification({
-            strategy: "email_code",
+          await signUp?.preparePhoneNumberVerification({
+            strategy: "phone_code",
           });
-
           router.push({
             pathname: "/(auth)/otp",
-            params: { email, type: "signUp" },
+            params: { phoneNumber, type: "signUp" },
           });
         } else {
           console.error(JSON.stringify(signUpAttempt, null, 2));

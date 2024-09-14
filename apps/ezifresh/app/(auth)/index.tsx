@@ -9,10 +9,9 @@ import {
 } from "react-native";
 import { Text } from "@/components/ui/text";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { cn } from "@/lib/utils";
 import * as z from "zod";
-import { useAuth, useSignIn, useSignUp, useUser } from "@clerk/clerk-expo";
+import { useSignIn } from "@clerk/clerk-expo";
 
 interface InputFieldProps {
   placeholder: string;
@@ -37,19 +36,19 @@ const InputField = (
   </>
 );
 const signInSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  phone: z.string(),
 });
 
 export default function SignInScreen() {
   const router = useRouter();
   const { signIn, setActive } = useSignIn();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("+2547");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const onSubmit = async () => {
     try {
-      const result = signInSchema.safeParse({ email });
+      const result = signInSchema.safeParse({ phone });
       if (!result.success) {
         const newErrors: { [key: string]: string } = {};
         result.error.errors.forEach((error: any) => {
@@ -61,21 +60,18 @@ export default function SignInScreen() {
         setLoading(true);
 
         const signInAttempt = await signIn?.create({
-          identifier: email,
-          strategy: "email_code",
+          identifier: phone,
+          strategy: "phone_code",
         });
-        console.log(JSON.stringify(signInAttempt, null, 2));931
-        const emailAddressId = signInAttempt?.supportedFirstFactors?.find(
-          (factor) => factor.strategy === "email_code",
-        )?.emailAddressId;
+        console.log(JSON.stringify(signInAttempt, null, 2));
+        const phoneNumberId = signInAttempt?.supportedFirstFactors?.find(
+          (factor) => factor.strategy === "phone_code",
+        )?.phoneNumberId;
+        console.log(phoneNumberId);
         if (signInAttempt?.status === "needs_first_factor") {
-          await signInAttempt?.prepareFirstFactor({
-            strategy: "email_code",
-            emailAddressId: emailAddressId!,
-          });
           router.push({
             pathname: "/(auth)/otp",
-            params: { email, type: "signIn", emailAddressId },
+            params: { phone, type: "signIn", phoneNumberId },
           });
         } else if (signInAttempt?.status === "complete") {
           await setActive!({ session: signInAttempt.createdSessionId });
@@ -101,10 +97,10 @@ export default function SignInScreen() {
 
         <View className="flex flex-col w-full gap-3">
           <InputField
-            placeholder="Email Address"
-            value={email}
-            onChangeText={setEmail}
-            error={errors.email}
+            placeholder="Phone Number"
+            value={phone}
+            onChangeText={setPhone}
+            error={errors.phone}
           />
         </View>
 
@@ -126,7 +122,7 @@ export default function SignInScreen() {
           <Text className="text-black text-[14px]">
             Don't have an account?
             <Text
-              className="text-blue-500 font-medium"
+              className="text-blue-500 font-medium cursor-pointer"
               onPress={() => router.push("/(auth)/register")}
             >
               Sign up

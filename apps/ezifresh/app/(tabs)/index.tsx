@@ -29,12 +29,13 @@ export default function HomeScreen() {
 
   signOut;
   return (
-      <ScrollView>
+      <ScrollView className="bg-white">
+        <SafeAreaView>
         <View className="flex flex-col bg-white h-full items-start justify-start">
         <View className="flex flex-col p-5 w-full items-start h-full justify-start gap-5 bg-white">
           <ChangeLocation />
           <View className="relative flex flex-row w-full items-center justify-start bg-[#F5F6F8] p-5 rounded-xl gap-4">
-            <Search size={24} color="gray" />
+            <Search size={24} color="gray" onPress={()=> signOut()} />
             <TextInput
               className={cn(
                 "bg-transparent flex flex-1 placeholder:text-black placeholder:text-[15px] text-[15px] text-black",
@@ -49,6 +50,7 @@ export default function HomeScreen() {
           <VendorsSection />
         </View>
       </View>
+      </SafeAreaView>
       </ScrollView>
   );
 }
