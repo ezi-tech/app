@@ -18,14 +18,7 @@
   "dependencies": {
     "@clerk/clerk-expo": "^2.2.10",
     "@expo/vector-icons": "^14.0.2",
-    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.0.2",
-    "@rn-primitives/avatar": "^1.0.5",
-    "@rn-primitives/label": "^1.0.4",
-    "@rn-primitives/slot": "^1.0.4",
-    "@rn-primitives/types": "^1.0.4",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
     "expo": "~51.0.28",
     "expo-auth-session": "^5.5.2",
     "expo-constants": "~16.0.2",
@@ -36,7 +29,6 @@
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
-    "expo-updates": "~0.25.24",
     "expo-web-browser": "~13.0.3",
     "lucide-react": "^0.441.0",
     "lucide-react-native": "^0.439.0",
@@ -76,6 +68,5 @@
         "expo-splash-screen"
       ]
     }
-  },
-  "prettier": "@ezi/prettier-config"
+  }
 }

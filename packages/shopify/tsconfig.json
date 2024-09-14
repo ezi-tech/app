@@ -1,0 +1,21 @@
+{
+  "extends": "@ezi/tsconfig/base.json",
+  "compilerOptions": {
+    "strict": true,
+    "plugins": [
+      {
+        "name": "gql.tada/ts-plugin",
+        "tadaOutputLocation": "./src/graphql-env.d.ts",
+        "schema": {
+          "url": "https://ezifresh-dev.myshopify.com/api/2024-04/graphql",
+          "headers": {
+            "Accept": "application/graphql-response+json",
+            "X-Shopify-Storefront-Access-Token": "e56bc4da7dd6520d8b1d729f982d7163"
+          }
+        }
+      }
+    ]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
