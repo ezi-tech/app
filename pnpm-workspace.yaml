@@ -11,6 +11,12 @@ catalog:
   typescript: ^5.5.4
   zod: ^3.23.8
 
+  # mobile
+  expo: ~51.0.28
+  nativewind: 4.1.6
+  react-native: ^0.74.5
+  lucide-react-native: ^0.439.0
+
 catalogs:
   react18:
     react: 18.2.0
