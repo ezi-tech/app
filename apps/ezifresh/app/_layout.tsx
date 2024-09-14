@@ -25,6 +25,7 @@ const InitialLayout: React.FC = () => {
 
   useEffect(() => {
     if (!fontsLoaded || !isLoaded || !isMounted) return;
+    Bootsplash.hide({ fade: true })
 
     if (isSignedIn) {
       router.replace('/(tabs)');

@@ -26,8 +26,6 @@ import React from "react";
 export default function HomeScreen() {
   const { signOut } = useAuth();
   const [value, onChangeText] = React.useState("");
-
-  signOut;
   return (
       <ScrollView className="bg-white">
         <SafeAreaView>
