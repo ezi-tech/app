@@ -129,9 +129,14 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
 # turbo
 .turbo
 
 # mac
 .DS_Store
+
+# others
+apps/ezifresh/android
+apps/ezifresh/ios
+apps/ezisoko/android
+apps/ezisoko/ios

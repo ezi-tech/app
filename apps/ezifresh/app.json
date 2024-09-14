@@ -9,22 +9,43 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ezifarmer.ezifresh"
+      "bundleIdentifier": "com.ezifarmer.ezifresh",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ezifarmer.ezifresh"
+      "package": "com.ezifarmer.ezifresh",
+      "runtimeVersion": "1.0.0"
     },
     "plugins": [
       "expo-router",
-      ["react-native-bootsplash", { "assetsDir": "assets/bootsplash" }]
+      [
+        "react-native-bootsplash",
+        {
+          "assetsDir": "assets/bootsplash"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3d0eba02-9bf1-47c8-b4d0-b3f1d6359df6"
+      }
+    },
+    "owner": "ezifarmer",
+    "updates": {
+      "url": "https://u.expo.dev/3d0eba02-9bf1-47c8-b4d0-b3f1d6359df6"
     }
   }
 }

@@ -36,6 +36,7 @@
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
+    "expo-updates": "~0.25.24",
     "expo-web-browser": "~13.0.3",
     "lucide-react": "^0.441.0",
     "lucide-react-native": "^0.439.0",
@@ -74,5 +75,6 @@
         "expo-splash-screen"
       ]
     }
-  }
+  },
+  "prettier": "@ezi/prettier-config"
 }
