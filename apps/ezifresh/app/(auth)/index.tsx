@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Pressable,
   SafeAreaView,
   TextInput,
@@ -11,7 +12,7 @@ import { Text } from "@/components/ui/text";
 import { useRouter } from "expo-router";
 import { cn } from "@/lib/utils";
 import * as z from "zod";
-import { useSignIn } from "@clerk/clerk-expo";
+import { useSignIn, useSignUp } from "@clerk/clerk-expo";
 
 interface InputFieldProps {
   placeholder: string;
@@ -36,12 +37,13 @@ const InputField = (
   </>
 );
 const signInSchema = z.object({
-  phone: z.string(),
+  phone: z.string().min(10, { message: "Phone number is too short" }).regex(/^\+2547\d{8}$/, { message: "Invalid phone number" }),
 });
 
 export default function SignInScreen() {
   const router = useRouter();
   const { signIn, setActive } = useSignIn();
+  const { signUp } = useSignUp();
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("+2547");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -58,16 +60,13 @@ export default function SignInScreen() {
       } else {
         setErrors({});
         setLoading(true);
-
         const signInAttempt = await signIn?.create({
           identifier: phone,
           strategy: "phone_code",
         });
-        console.log(JSON.stringify(signInAttempt, null, 2));
         const phoneNumberId = signInAttempt?.supportedFirstFactors?.find(
           (factor) => factor.strategy === "phone_code",
         )?.phoneNumberId;
-        console.log(phoneNumberId);
         if (signInAttempt?.status === "needs_first_factor") {
           router.push({
             pathname: "/(auth)/otp",
@@ -82,19 +81,42 @@ export default function SignInScreen() {
       }
     } catch (err: any) {
       console.log(JSON.stringify(err, null, 2));
+      if (err.errors[0].code === "form_identifier_not_found") {
+        const signUpAttempt = await signUp?.create({
+          phoneNumber: phone,
+        });
+        if (signUpAttempt?.status === "missing_requirements") {
+          await signUp?.preparePhoneNumberVerification({
+            strategy: "phone_code",
+          });
+          router.push({
+            pathname: "/(auth)/otp",
+            params: { phone, type: "signUp" },
+          });
+        } else if (signUpAttempt?.status === "complete") {
+          await setActive!({ session: signUpAttempt.createdSessionId });
+          router.replace({
+            pathname: "/(tabs)",
+          });
+        }
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
     <SafeAreaView className="flex flex-col bg-white h-full items-center justify-center">
       <View className="flex flex-col p-5 w-full items-start h-full justify-center gap-5">
-        <View className="flex w-full items-center">
-          <Text className="justify-center text-black text-3xl font-semibold">
-            Enter your details
-          </Text>
+        <View className="absolute top-1 items-center justify-center w-screen">
+          <Image
+            source={{
+              uri: "https://assets.ezifarmer.com/ezisoko.png",
+            }}
+            className="w-full h-12 object-contain"
+            resizeMode="contain"
+          />
         </View>
-
         <View className="flex flex-col w-full gap-3">
           <InputField
             placeholder="Phone Number"
@@ -105,6 +127,14 @@ export default function SignInScreen() {
         </View>
 
         <View className="w-full">
+        </View>
+        <View className="absolute bottom-0 w-screen items-center gap-2 justify-center px-5">
+          <View className="flex flex-row flex-wrap items-center gap-1">
+            <Text className="text-black text-[14px]">
+              By signing in, you agree to our
+            </Text>
+            <Text className="text-black underline">Terms of Service</Text>
+          </View>
           <Pressable
             className="flex w-full p-5 items-center rounded-full bg-[#32BB78]"
             onPress={onSubmit}
@@ -117,23 +147,6 @@ export default function SignInScreen() {
                 </Text>
               )}
           </Pressable>
-        </View>
-        <View className="flex items-center justify-center w-full">
-          <Text className="text-black text-[14px]">
-            Don't have an account?
-            <Text
-              className="text-blue-500 font-medium cursor-pointer"
-              onPress={() => router.push("/(auth)/register")}
-            >
-              Sign up
-            </Text>
-          </Text>
-        </View>
-        <View className="flex w-full items-center">
-          <Text className="text-black text-[14px]">
-            By signing in, you agree to our
-            <Text className="text-blue-500">Terms of Service</Text>
-          </Text>
         </View>
       </View>
     </SafeAreaView>
