@@ -58,7 +58,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="more"
+        name="account"
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
