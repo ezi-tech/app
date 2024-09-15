@@ -12,7 +12,7 @@ const INITIAL_TIMER = 15;
 export default function OTPScreen() {
   const { signUp } = useSignUp();
   const { signIn, setActive } = useSignIn();
-  const { email, type, phoneNumberId } = useLocalSearchParams();
+  const { phone, type, phoneNumberId } = useLocalSearchParams();
   const router = useRouter();
   const [code, setCode] = useState("");
   const [timer, setTimer] = useState(INITIAL_TIMER);
@@ -79,7 +79,7 @@ export default function OTPScreen() {
           <Text className="text-black text-2xl font-bold">Enter OTP</Text>
         </View>
         <Text className="text-black text-lg">
-          Enter the OTP sent to <Text className="text-black font-semibold">{email}</Text>
+          Enter the OTP sent to <Text className="text-black font-semibold">{phone}</Text>
         </Text>
         <OtpInput
           numberOfDigits={6}
