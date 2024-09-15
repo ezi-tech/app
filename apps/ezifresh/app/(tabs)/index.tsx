@@ -1,27 +1,25 @@
-import {
-  FlatList,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ScrollView
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import {
   AlarmClock,
-  ArrowRight,
   Bike,
   ChevronRight,
   MapPin,
   Search,
   SlidersHorizontal,
-  Star,
+  Star
 } from "lucide-react-native";
-import { cn } from "@/lib/utils";
 import React from "react";
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { signOut } = useAuth();
