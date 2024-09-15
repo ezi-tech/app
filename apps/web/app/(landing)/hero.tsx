@@ -21,11 +21,11 @@ export function Hero() {
           </nav>
         </header>
         <main className="relative z-[2] mx-auto max-w-7xl px-4 py-8">
-          <div className="max-w-3xl space-y-8 py-16 sm:py-20">
+          <div className="max-w-4xl space-y-8 py-16 sm:py-20">
             <h1 className="font-signika text-5xl font-bold text-gray-100 sm:text-8xl">
-              Re-inventing the food supply chain
+              Connecting farmers, vendors & consumers
             </h1>
-            <p className="text-sm !leading-[1.65] sm:text-xl">
+            <p className="max-w-3xl text-sm !leading-[1.65] sm:text-xl">
               Fresh groceries at your fingertips. With Ezifresh, order locally
               sourced produce delivered straight to your door, hassle-free.
               Behind the scenes, vendors use Ezisoko to fulfill orders, ensuring
