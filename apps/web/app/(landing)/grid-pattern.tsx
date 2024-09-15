@@ -8,12 +8,12 @@ export function GridPattern(props: any) {
       <defs>
         <pattern
           id={patternId}
-          width="180"
-          height="180"
+          width="100"
+          height="100"
           patternUnits="userSpaceOnUse"
           {...props}
         >
-          <path d="M0 180V.5H180" fill="none" stroke="currentColor" />
+          <path d="M0 128V.5H128" fill="none" stroke="currentColor" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternId})`} />
