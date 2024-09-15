@@ -91,7 +91,7 @@ export default function MoreScreen() {
                 idx !== menuItems.length - 1 && "border-b",
               )}
             >
-              <item.icon className="h-12 w-12 text-primary" />
+              <item.icon className="h-12 w-12 text-foreground/80" />
               <Text className="text-lg">{item.title}</Text>
             </View>
           ))}
@@ -103,7 +103,7 @@ export default function MoreScreen() {
                 "flex flex-row items-center gap-4 border-muted p-4",
               )}
             >
-              <LogOut className="h-12 w-12 text-primary" />
+              <LogOut className="h-12 w-12 text-foreground/80" />
               <Text className="text-lg">Log Out</Text>
             </View>
           </Card>
