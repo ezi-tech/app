@@ -63,6 +63,9 @@ importers:
       '@clerk/clerk-expo':
         specifier: ^2.2.10
         version: 2.2.10(@types/react@18.2.79)(expo-auth-session@5.5.2(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))))(expo-secure-store@13.0.2(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))))(expo-web-browser@13.0.3(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))))(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+      '@expo-google-fonts/asap':
+        specifier: ^0.2.3
+        version: 0.2.3
       '@expo/vector-icons':
         specifier: ^14.0.2
         version: 14.0.2
@@ -1298,6 +1301,9 @@ packages:
   '@eslint/plugin-kit@0.1.0':
     resolution: {integrity: sha512-autAXT203ixhqei9xt+qkYOvY8l6LAFIdT2UXc/RPNeUVfqRF1BV94GTJyVPFKT8nFM6MyVJhjLj9E8JWvf5zQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@expo-google-fonts/asap@0.2.3':
+    resolution: {integrity: sha512-sAbR2E0UySj1QJT14KAhbNu9eY4LTJbP96tLNv1qZ6ks5ywJ4aTcUEUY/q6SU3SwfZqmfNIfRgVA6VtfnP1eVw==}
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
@@ -8359,6 +8365,8 @@ snapshots:
   '@eslint/plugin-kit@0.1.0':
     dependencies:
       levn: 0.4.1
+
+  '@expo-google-fonts/asap@0.2.3': {}
 
   '@expo/bunyan@4.0.1':
     dependencies:
