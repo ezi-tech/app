@@ -35,7 +35,7 @@ export function FAQ() {
 
   return (
     <section className="mx-auto max-w-7xl p-4 pb-20 md:pb-40">
-      <h3 className="mb-4 text-3xl">Frequently asked questions </h3>
+      <h3 className="mb-4 text-3xl font-medium font-signika">Frequently asked questions </h3>
       <p className="text-lg text-muted-foreground">
         Can’t find the answer you’re looking for?{" "}
         <a className="underline" href="mailto:hello@ezifarmer.com">

@@ -138,7 +138,7 @@ export function Products() {
   return (
     <section className="mx-auto max-w-7xl space-y-12 p-4 py-20 sm:py-32">
       <h3 className="-mb-8 text-center text-lg uppercase">All Products</h3>
-      <p className="mx-auto max-w-md text-center text-3xl font-medium leading-snug">
+      <p className="mx-auto max-w-md text-center text-3xl font-signika font-medium leading-snug">
         Streamlining processes for farmers, vendors, and consumers
       </p>
 
@@ -157,7 +157,7 @@ export function Products() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-8 rounded-3xl bg-white p-12">
             <section className="space-y-12 py-20">
-              <h4 className="text-4xl font-medium leading-snug">
+              <h4 className="text-4xl font-medium font-signika leading-snug">
                 {solution.title()}
               </h4>
               <p className="max-w-md text-lg">{solution.description}</p>
