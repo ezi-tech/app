@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useFonts } from 'expo-font';
-import Bootsplash from 'react-native-bootsplash';
-import 'react-native-reanimated';
-import '../global.css';
-import Provider from '@/lib/provider';
-import { Slot, Stack, useRouter, useSegments } from 'expo-router';
-import { useAuth } from '@clerk/clerk-expo';
+import {
+  Asap_400Regular,
+  Asap_500Medium,
+  Asap_600SemiBold,
+  useFonts,
+} from "@expo-google-fonts/asap";
+import React, { useEffect, useState } from "react";
+import Bootsplash from "react-native-bootsplash";
+
+import "react-native-reanimated";
+import "../global.css";
+
+import Provider from "@/lib/provider";
+import { useAuth } from "@clerk/clerk-expo";
+import { Slot, useRouter } from "expo-router";
 
 const InitialLayout: React.FC = () => {
   const { isLoaded, isSignedIn } = useAuth();
@@ -14,7 +21,9 @@ const InitialLayout: React.FC = () => {
   const router = useRouter();
 
   const [fontsLoaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Asap_400Regular,
+    Asap_500Medium,
+    Asap_600SemiBold,
   });
 
   useEffect(() => {
@@ -25,12 +34,12 @@ const InitialLayout: React.FC = () => {
 
   useEffect(() => {
     if (!fontsLoaded || !isLoaded || !isMounted) return;
-    Bootsplash.hide({ fade: true })
+    Bootsplash.hide({ fade: true });
 
     if (isSignedIn) {
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     } else {
-      router.replace('/(auth)');
+      router.replace("/(auth)");
     }
   }, [fontsLoaded, isLoaded, isMounted, isSignedIn, router]);
 

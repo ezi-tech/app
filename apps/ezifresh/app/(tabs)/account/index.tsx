@@ -67,16 +67,16 @@ export default function MoreScreen() {
     <SafeAreaView>
       <View className="grid gap-4 p-4">
         <Card className="flex w-full flex-row items-center gap-4 rounded-2xl p-4">
-          <Avatar alt="Zach Nugent's Avatar" className="h-16 w-16">
+          <Avatar alt="Avatar" className="h-16 w-16">
             <AvatarFallback>
-              <Text className="text-lg">
+              <Text className="text-xl">
                 {firstInitial}
                 {lastInitial}
               </Text>
             </AvatarFallback>
           </Avatar>
           <View>
-            <Text className="text-2xl font-medium">{user?.fullName}</Text>
+            <Text className="text-2xl font-asap-semibold">{user?.fullName}</Text>
             <Text className="text-muted-foreground">
               {user?.phoneNumbers[0].phoneNumber}
             </Text>
