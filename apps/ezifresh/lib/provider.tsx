@@ -1,5 +1,7 @@
+import { ApolloClient, ApolloProvider } from "@apollo/client";
 import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
+import { apolloClient } from "./apollo";
 
 declare const process: {
   env: {
@@ -48,10 +50,12 @@ if (!publishableKey) {
 
 export default function Provider({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <ClerkLoaded>
-        {children}
-      </ClerkLoaded>
-    </ClerkProvider>
+    <ApolloProvider client={apolloClient}>
+      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+        <ClerkLoaded>
+          {children}
+        </ClerkLoaded>
+      </ClerkProvider>
+    </ApolloProvider>
   );
 }
