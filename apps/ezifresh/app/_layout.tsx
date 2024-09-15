@@ -1,33 +1,49 @@
-import { apolloClient } from "@/lib/apollo";
-import { ApolloProvider } from "@apollo/client";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import { useEffect } from "react";
-import Bootsplash from "react-native-bootsplash";
-import "react-native-reanimated";
-import "../global.css";
+import React, { useEffect, useState } from 'react';
+import { useFonts } from 'expo-font';
+import Bootsplash from 'react-native-bootsplash';
+import 'react-native-reanimated';
+import '../global.css';
+import Provider from '@/lib/provider';
+import { Slot, Stack, useRouter, useSegments } from 'expo-router';
+import { useAuth } from '@clerk/clerk-expo';
 
-export default function RootLayout() {
-  const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+const InitialLayout: React.FC = () => {
+  const { isLoaded, isSignedIn } = useAuth();
+  const [isMounted, setIsMounted] = useState(false);
+
+  const router = useRouter();
+
+  const [fontsLoaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {
-    if (loaded) {
-      Bootsplash.hide({ fade: true });
+    if (fontsLoaded && isLoaded) {
+      setIsMounted(true);
     }
-  }, [loaded]);
+  }, [fontsLoaded, isLoaded]);
 
-  if (!loaded) {
+  useEffect(() => {
+    if (!fontsLoaded || !isLoaded || !isMounted) return;
+    Bootsplash.hide({ fade: true })
+
+    if (isSignedIn) {
+      router.replace('/(tabs)');
+    } else {
+      router.replace('/(auth)');
+    }
+  }, [fontsLoaded, isLoaded, isMounted, isSignedIn, router]);
+
+  if (!fontsLoaded || !isLoaded) {
     return null;
   }
 
-  return (
-    <ApolloProvider client={apolloClient}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ApolloProvider>
-  );
-}
+  return <Slot />;
+};
+const RootLayout: React.FC = () => (
+  <Provider>
+    <InitialLayout />
+  </Provider>
+);
+
+export default RootLayout;
