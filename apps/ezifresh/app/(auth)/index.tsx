@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -13,6 +13,7 @@ import { useRouter } from "expo-router";
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { useSignIn, useSignUp } from "@clerk/clerk-expo";
+import * as SecureStore from "expo-secure-store";
 
 interface InputFieldProps {
   placeholder: string;
@@ -37,7 +38,10 @@ const InputField = (
   </>
 );
 const signInSchema = z.object({
-  phone: z.string().min(10, { message: "Phone number is too short" }).regex(/^\+2547\d{8}$/, { message: "Invalid phone number" }),
+  phone: z.string().min(10, { message: "Phone number is too short" }).regex(
+    /^\+2547\d{8}$/,
+    { message: "Invalid phone number" },
+  ),
 });
 
 export default function SignInScreen() {
@@ -47,6 +51,14 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("+2547");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    SecureStore.getItemAsync("phone").then((value) => {
+      if (value) {
+        setPhone(value);
+      }
+    });
+  }, []);
 
   const onSubmit = async () => {
     try {
@@ -60,6 +72,7 @@ export default function SignInScreen() {
       } else {
         setErrors({});
         setLoading(true);
+        await SecureStore.setItemAsync("phone", phone);
         const signInAttempt = await signIn?.create({
           identifier: phone,
           strategy: "phone_code",
@@ -111,7 +124,7 @@ export default function SignInScreen() {
         <View className="absolute top-1 items-center justify-center w-screen">
           <Image
             source={{
-              uri: "https://assets.ezifarmer.com/ezisoko.png",
+              uri: "https://assets.ezifarmer.com/ezifresh.png",
             }}
             className="w-full h-12 object-contain"
             resizeMode="contain"
