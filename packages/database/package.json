@@ -2,7 +2,7 @@
   "name": "@ezi/database",
   "version": "1.0.0",
   "description": "Drizzle database setup",
-  "main": "index.js",
+  "main": "./index.ts",
   "scripts": {
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
@@ -17,6 +17,7 @@
     "drizzle-kit": "^0.24.2"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.9.5",
     "drizzle-orm": "^0.33.0"
   },
   "prettier": "@ezi/prettier-config"
