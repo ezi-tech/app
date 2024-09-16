@@ -11,7 +11,7 @@ const INITIAL_TIMER = 15;
 export default function OTPScreen() {
   const { signUp } = useSignUp();
   const { signIn, setActive } = useSignIn();
-  const { phone, type, phoneNumberId } = useLocalSearchParams();
+  const { type, phoneNumberId } = useLocalSearchParams();
   const router = useRouter();
   const [code, setCode] = useState("");
   const [timer, setTimer] = useState(INITIAL_TIMER);
@@ -100,7 +100,7 @@ export default function OTPScreen() {
               We've sent it to
             </Text>
             <Text className="text-center text-xl text-muted-foreground">
-              {phone}
+              {signIn?.identifier}
             </Text>
           </View>
         </View>
