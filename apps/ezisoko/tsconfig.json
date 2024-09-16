@@ -8,8 +8,9 @@
         "./*"
       ]
     },
-    "types": ["nativewind/types"],
-    "moduleResolution": "Bundler"
+    "types": [
+      "nativewind/types"
+    ]
   },
   "include": [
     "**/*.ts",
