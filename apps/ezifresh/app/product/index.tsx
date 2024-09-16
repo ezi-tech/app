@@ -156,7 +156,7 @@ export default function ProductScreen() {
                                 setModalVisible(false);
                               }}
                             >
-                              <View className="flex w-full flex-row gap-4 rounded-2xl border-[0.2px] border-gray-300 p-3 mb-2 items-center">
+                              <View className="flex w-full flex-row gap-4 rounded-2xl border-[0.2px] border-gray-300 p-3 mb-2 ">
                                 <Avatar alt="Avatar" className="h-12 w-12">
                                   <AvatarFallback>
                                     <Text className="text-xl">ST</Text>
@@ -180,7 +180,9 @@ export default function ProductScreen() {
                                     </Text>
                                   </View>
                                 )}
-                                <ChevronRight size={20} color="black" />
+                                <View className="flex items-center justify-center">
+                   <ChevronRight size={20} color="black" />
+                   </View>
                               </View>
                             </Pressable>
                           )}
@@ -209,7 +211,7 @@ export default function ProductScreen() {
                         <Text className="text-xl">ST</Text>
                       </AvatarFallback>
                     </Avatar>
-                    <View>
+                    <View className="flex-grow">
                       <Text className="font-asap-semibold text-lg">
                         {store.name}
                       </Text>
@@ -227,7 +229,9 @@ export default function ProductScreen() {
                         </Text>
                       </View>
                     )}
-                    <ChevronRight size={20} color="black" />
+                   <View className="flex items-center justify-center">
+                   <ChevronRight size={20} color="black" />
+                   </View>
                   </View>
                 </Pressable>
               ))}
