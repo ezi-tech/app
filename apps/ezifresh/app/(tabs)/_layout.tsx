@@ -26,6 +26,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           height: 60,
+          paddingVertical: 5,
         }
       }}
     >
@@ -57,7 +58,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="more"
+        name="account"
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (

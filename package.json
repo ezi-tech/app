@@ -2,12 +2,7 @@
   "name": "ezifarmer",
   "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "description": "A monorepo containing the ezifresh and ezisoko web and mobile applications",
   "scripts": {
     "build:android": "turbo build:android"
   },

@@ -1,0 +1,24 @@
+{
+  "name": "@ezi/database",
+  "version": "1.0.0",
+  "description": "Drizzle database setup",
+  "main": "./index.ts",
+  "scripts": {
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate:pg --out=migrations"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@ezi/eslint-config": "workspace:^",
+    "@ezi/tsconfig": "workspace:^",
+    "drizzle-kit": "^0.24.2"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.5",
+    "drizzle-orm": "^0.33.0"
+  },
+  "prettier": "@ezi/prettier-config"
+}
