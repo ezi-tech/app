@@ -1,47 +1,18 @@
-import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Pressable,
-  SafeAreaView,
-  TextInput,
-  View,
-} from "react-native";
+import { Button } from "@/components/ui/button";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Text } from "@/components/ui/text";
-import { useRouter } from "expo-router";
-import { cn } from "@/lib/utils";
-import * as z from "zod";
 import { useSignIn, useSignUp } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Image, SafeAreaView, View } from "react-native";
+import * as z from "zod";
 
-interface InputFieldProps {
-  placeholder: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  error?: string;
-}
-
-const InputField = (
-  { placeholder, value, onChangeText, error }: InputFieldProps,
-) => (
-  <>
-    <TextInput
-      className={cn(
-        "bg-[#F5F6F8] w-full p-5 rounded-xl placeholder:text-black placeholder:text-[15px] text-[15px] text-black",
-      )}
-      placeholder={placeholder}
-      value={value}
-      onChangeText={onChangeText}
-    />
-    {error && <Text className="text-red-500 text-[12px]">{error}</Text>}
-  </>
-);
 const signInSchema = z.object({
-  phone: z.string().min(10, { message: "Phone number is too short" }).regex(
-    /^\+2547\d{8}$/,
-    { message: "Invalid phone number" },
-  ),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number is too short" })
+    .regex(/^\+254\d{9}$/, { message: "Please enter a valid phone number" }),
 });
 
 export default function SignInScreen() {
@@ -49,20 +20,22 @@ export default function SignInScreen() {
   const { signIn, setActive } = useSignIn();
   const { signUp } = useSignUp();
   const [loading, setLoading] = useState(false);
-  const [phone, setPhone] = useState("+2547");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+254");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    SecureStore.getItemAsync("phone").then((value) => {
+    SecureStore.getItemAsync("phoneNumber").then((value) => {
       if (value) {
-        setPhone(value);
+        setPhoneNumber(value);
       }
     });
   }, []);
 
   const onSubmit = async () => {
     try {
-      const result = signInSchema.safeParse({ phone });
+      const fullPhone = `${countryCode}${phoneNumber}`;
+      const result = signInSchema.safeParse({ phone: fullPhone });
       if (!result.success) {
         const newErrors: { [key: string]: string } = {};
         result.error.errors.forEach((error: any) => {
@@ -72,9 +45,9 @@ export default function SignInScreen() {
       } else {
         setErrors({});
         setLoading(true);
-        await SecureStore.setItemAsync("phone", phone);
+        await SecureStore.setItemAsync("phoneNumber", phoneNumber);
         const signInAttempt = await signIn?.create({
-          identifier: phone,
+          identifier: fullPhone,
           strategy: "phone_code",
         });
         const phoneNumberId = signInAttempt?.supportedFirstFactors?.find(
@@ -83,7 +56,7 @@ export default function SignInScreen() {
         if (signInAttempt?.status === "needs_first_factor") {
           router.push({
             pathname: "/(auth)/otp",
-            params: { phone, type: "signIn", phoneNumberId },
+            params: { phone: fullPhone, type: "signIn", phoneNumberId },
           });
         } else if (signInAttempt?.status === "complete") {
           await setActive!({ session: signInAttempt.createdSessionId });
@@ -93,25 +66,31 @@ export default function SignInScreen() {
         }
       }
     } catch (err: any) {
-      console.log(JSON.stringify(err, null, 2));
+      console.log("signInError", JSON.stringify(err, null, 2));
       if (err.errors[0].code === "form_identifier_not_found") {
-        const signUpAttempt = await signUp?.create({
-          phoneNumber: phone,
-        });
-        if (signUpAttempt?.status === "missing_requirements") {
-          await signUp?.preparePhoneNumberVerification({
-            strategy: "phone_code",
+        await signUp
+          ?.create({
+            phoneNumber: `+254${phoneNumber}`,
+          })
+          .then(async (signUpAttempt) => {
+            if (signUpAttempt?.status === "missing_requirements") {
+              await signUp?.preparePhoneNumberVerification({
+                strategy: "phone_code",
+              });
+              router.push({
+                pathname: "/(auth)/otp",
+                params: { phone: phoneNumber, type: "signUp" },
+              });
+            } else if (signUpAttempt?.status === "complete") {
+              setActive!({ session: signUpAttempt.createdSessionId });
+              router.replace({
+                pathname: "/(tabs)",
+              });
+            }
+          })
+          .catch((err) => {
+            console.log("signUpError", JSON.stringify(err, null, 2));
           });
-          router.push({
-            pathname: "/(auth)/otp",
-            params: { phone, type: "signUp" },
-          });
-        } else if (signUpAttempt?.status === "complete") {
-          await setActive!({ session: signUpAttempt.createdSessionId });
-          router.replace({
-            pathname: "/(tabs)",
-          });
-        }
       }
     } finally {
       setLoading(false);
@@ -119,47 +98,46 @@ export default function SignInScreen() {
   };
 
   return (
-    <SafeAreaView className="flex flex-col bg-white h-full items-center justify-center">
-      <View className="flex flex-col p-5 w-full items-start h-full justify-center gap-5">
-        <View className="absolute top-1 items-center justify-center w-screen">
-          <Image
-            source={{
-              uri: "https://assets.ezifarmer.com/ezifresh.png",
-            }}
-            className="w-full h-12 object-contain"
-            resizeMode="contain"
-          />
-        </View>
-        <View className="flex flex-col w-full gap-3">
-          <InputField
+    <SafeAreaView>
+      <View className="flex h-full w-full flex-col items-center justify-center gap-36 bg-white p-8">
+        <Image
+          source={{
+            uri: "https://assets.ezifarmer.com/ezifresh.png",
+          }}
+          className="h-16 w-full object-contain"
+          resizeMode="contain"
+        />
+        <View className="flex w-full flex-col gap-3">
+          <PhoneInput
             placeholder="Phone Number"
-            value={phone}
-            onChangeText={setPhone}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
             error={errors.phone}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
           />
         </View>
 
-        <View className="w-full">
-        </View>
-        <View className="absolute bottom-0 w-screen items-center gap-2 justify-center px-5">
+        <View className="w-full items-center justify-center gap-4">
           <View className="flex flex-row flex-wrap items-center gap-1">
-            <Text className="text-black text-[14px]">
-              By signing in, you agree to our
+            <Text className="text-muted-foreground">
+              By continuing, you agree to our
             </Text>
-            <Text className="text-black underline">Terms of Service</Text>
+            <Text className="text-muted-foreground underline">
+              Terms of Service
+            </Text>
           </View>
-          <Pressable
-            className="flex w-full p-5 items-center rounded-full bg-[#32BB78]"
+          <Button
+            size="lg"
+            className="flex w-full items-center rounded-xl"
             onPress={onSubmit}
           >
-            {loading
-              ? <ActivityIndicator color="white" />
-              : (
-                <Text className="text-white text-[15px] font-bold">
-                  Sign In
-                </Text>
-              )}
-          </Pressable>
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text>Continue</Text>
+            )}
+          </Button>
         </View>
       </View>
     </SafeAreaView>
