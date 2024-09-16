@@ -11,7 +11,7 @@ export default function AccountLayout() {
         }}
       />
       <Stack.Screen name="orders" options={{ headerShown: false }} />
-      <Stack.Screen name="addresses" options={{ headerShown: false }} />
+      <Stack.Screen name="address" options={{ headerShown: false }} />
       <Stack.Screen name="settings" options={{ headerShown: false }} />
       <Stack.Screen name="support" options={{ headerShown: false }} />
       <Stack.Screen name="about" options={{ headerShown: false }} />
