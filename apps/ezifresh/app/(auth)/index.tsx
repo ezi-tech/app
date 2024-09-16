@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 import { useSignIn, useSignUp } from "@clerk/clerk-expo";
@@ -10,7 +11,7 @@ import {
   Image,
   SafeAreaView,
   TextInput,
-  View,
+  View
 } from "react-native";
 import * as z from "zod";
 
@@ -131,16 +132,16 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full flex-col items-center justify-center gap-24 bg-white p-8">
+      <View className="flex h-full w-full flex-col items-center justify-center gap-36 bg-white p-8">
         <Image
           source={{
             uri: "https://assets.ezifarmer.com/ezifresh.png",
           }}
-          className="h-14 w-full object-contain"
+          className="h-16 w-full object-contain"
           resizeMode="contain"
         />
         <View className="flex w-full flex-col gap-3">
-          <InputField
+          <PhoneInput
             placeholder="Phone Number"
             value={phoneNumber}
             onChangeText={setPhoneNumber}

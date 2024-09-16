@@ -84,52 +84,54 @@ export default function OTPScreen() {
   }, [timer]);
 
   return (
-    <SafeAreaView className="flex h-full w-full gap-y-20 bg-white px-4 py-8">
-      <View className="relative flex w-full flex-col gap-y-4 p-3">
-        <View className="relative flex w-full flex-row items-center justify-start">
-          <View className="absolute left-0">
-            <ArrowLeft color="black" onPress={() => router.back()} />
+    <SafeAreaView>
+      <View className="flex h-full w-full gap-y-20 bg-white px-4 py-12">
+        <View className="flex w-full flex-col gap-y-4 p-3">
+          <View className="relative flex w-full flex-row items-center justify-start">
+            <View className="absolute left-0">
+              <ArrowLeft color="black" onPress={() => router.back()} />
+            </View>
+            <Text className="font-asap-medium mx-auto text-center text-2xl">
+              Enter OTP code
+            </Text>
           </View>
-          <Text className="font-asap-medium mx-auto text-center text-2xl">
-            Enter OTP code
-          </Text>
+          <View className="flex gap-2">
+            <Text className="text-center text-xl text-muted-foreground">
+              We've sent it to
+            </Text>
+            <Text className="text-center text-xl text-muted-foreground">
+              {phone}
+            </Text>
+          </View>
         </View>
-        <View className="mx-auto grid gap-2 text-center">
-          <Text className="text-center text-xl text-muted-foreground">
-            We've sent it to
-          </Text>
-          <Text className="text-center text-xl text-muted-foreground">
-            {phone}
-          </Text>
-        </View>
-      </View>
-      <View className="flex w-full items-center gap-12">
-        <OtpInput
-          numberOfDigits={6}
-          focusColor="#32BB78"
-          focusStickBlinkingDuration={500}
-          onTextChange={handleOtpChange}
-          onFilled={handleOtpFilled}
-          textInputProps={{ accessibilityLabel: "One-Time Password" }}
-          theme={{
-            pinCodeContainerStyle: styles.container,
-            containerStyle: styles.box,
-            pinCodeTextStyle: {
-              color: "#71717a",
-            },
-            focusedPinCodeContainerStyle: {
-              backgroundColor: "#fff",
-            },
-          }}
-        />
+        <View className="flex w-full items-center gap-12">
+          <OtpInput
+            numberOfDigits={6}
+            focusColor="#32BB78"
+            focusStickBlinkingDuration={500}
+            onTextChange={handleOtpChange}
+            onFilled={handleOtpFilled}
+            textInputProps={{ accessibilityLabel: "One-Time Password" }}
+            theme={{
+              pinCodeContainerStyle: styles.container,
+              containerStyle: styles.box,
+              pinCodeTextStyle: {
+                color: "#71717a",
+              },
+              focusedPinCodeContainerStyle: {
+                backgroundColor: "#fff",
+              },
+            }}
+          />
 
-        {timer === 0 ? (
-          <TouchableOpacity onPress={resendOtp}>
-            <Text className="text-lg font-semibold">Resend OTP</Text>
-          </TouchableOpacity>
-        ) : (
-          <Text className="text-lg text-muted-foreground">{`Resend in ${timer}s`}</Text>
-        )}
+          {timer === 0 ? (
+            <TouchableOpacity onPress={resendOtp}>
+              <Text className="text-lg font-semibold">Resend OTP</Text>
+            </TouchableOpacity>
+          ) : (
+            <Text className="text-lg text-muted-foreground">{`Resend in ${timer}s`}</Text>
+          )}
+        </View>
       </View>
     </SafeAreaView>
   );
