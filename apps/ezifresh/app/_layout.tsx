@@ -49,6 +49,7 @@ const InitialLayout: React.FC = () => {
 
   return <Slot />;
 };
+
 const RootLayout: React.FC = () => (
   <Provider>
     <InitialLayout />

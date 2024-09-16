@@ -5,7 +5,6 @@ import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { OtpInput } from "react-native-otp-entry";
-import Toast from 'react-native-toast-message';
 
 const INITIAL_TIMER = 15;
 
@@ -22,11 +21,18 @@ export default function OTPScreen() {
   const handleOtpFilled = async (text: string) => {
     try {
       if (type === "signUp") {
-        const response = await signUp?.attemptPhoneNumberVerification({ code: text });
+        const response = await signUp?.attemptPhoneNumberVerification({
+          code: text,
+        });
         console.log(JSON.stringify(response, null, 2));
         if (response?.status === "complete") {
           await setActive!({ session: response.createdSessionId });
           router.replace("/(tabs)/");
+        } else if (response?.status === "missing_requirements") {
+          router.replace({
+            pathname: "/(auth)/complete",
+            params: { missingFields: response.missingFields },
+          });
         }
       } else {
         const response = await signIn?.attemptFirstFactor({
@@ -48,11 +54,15 @@ export default function OTPScreen() {
     try {
       setTimer(INITIAL_TIMER);
       if (type === "signUp") {
-        await signUp?.preparePhoneNumberVerification({ strategy: "phone_code" });
+        await signUp?.preparePhoneNumberVerification({
+          strategy: "phone_code",
+        });
       } else {
         await signIn?.prepareFirstFactor({
           strategy: "phone_code",
-          phoneNumberId:  Array.isArray(phoneNumberId) ? phoneNumberId[0] : phoneNumberId,
+          phoneNumberId: Array.isArray(phoneNumberId)
+            ? phoneNumberId[0]
+            : phoneNumberId,
         });
       }
     } catch (error) {
@@ -64,23 +74,36 @@ export default function OTPScreen() {
     let interval: number;
 
     if (timer > 0) {
-      interval = setInterval(() => setTimer(prevTimer => prevTimer - 1), 1000);
+      interval = setInterval(
+        () => setTimer((prevTimer) => prevTimer - 1),
+        1000,
+      );
     }
 
     return () => clearInterval(interval);
   }, [timer]);
 
-
   return (
-    <SafeAreaView className="flex h-full w-full">
-      <View className="flex w-full flex-col gap-y-4 p-3">
-        <View className="flex flex-row gap-10 items-center justify-start">
-          <ArrowLeft className="text-black" color="black" onPress={() => router.back()} />
-          <Text className="text-black text-2xl font-bold">Enter OTP</Text>
+    <SafeAreaView className="flex h-full w-full gap-y-20 bg-white px-4 py-8">
+      <View className="relative flex w-full flex-col gap-y-4 p-3">
+        <View className="relative flex w-full flex-row items-center justify-start">
+          <View className="absolute left-0">
+            <ArrowLeft color="black" onPress={() => router.back()} />
+          </View>
+          <Text className="font-asap-medium mx-auto text-center text-2xl">
+            Enter OTP code
+          </Text>
         </View>
-        <Text className="text-black text-lg">
-          Enter the OTP sent to <Text className="text-black font-semibold">{phone}</Text>
-        </Text>
+        <View className="mx-auto grid gap-2 text-center">
+          <Text className="text-center text-xl text-muted-foreground">
+            We've sent it to
+          </Text>
+          <Text className="text-center text-xl text-muted-foreground">
+            {phone}
+          </Text>
+        </View>
+      </View>
+      <View className="flex w-full items-center gap-12">
         <OtpInput
           numberOfDigits={6}
           focusColor="#32BB78"
@@ -91,20 +114,22 @@ export default function OTPScreen() {
           theme={{
             pinCodeContainerStyle: styles.container,
             containerStyle: styles.box,
+            pinCodeTextStyle: {
+              color: "#71717a",
+            },
+            focusedPinCodeContainerStyle: {
+              backgroundColor: "#fff",
+            },
           }}
         />
-      </View>
-      <View className="flex w-full items-center mt-5">
-        <Text className="text-black text-lg">
-          Didn't receive the OTP?{" "}
-          {timer === 0 ? (
-            <TouchableOpacity onPress={resendOtp}>
-              <Text className="text-black font-semibold">Resend OTP</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text className="text-gray-500">{`Resend in ${timer}s`}</Text>
-          )}
-        </Text>
+
+        {timer === 0 ? (
+          <TouchableOpacity onPress={resendOtp}>
+            <Text className="text-lg font-semibold">Resend OTP</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text className="text-lg text-muted-foreground">{`Resend in ${timer}s`}</Text>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -113,8 +138,6 @@ export default function OTPScreen() {
 const styles = StyleSheet.create({
   box: {
     width: "auto",
-    height: 50,
-    backgroundColor: "transparent",
     padding: 4,
   },
   container: {
@@ -123,6 +146,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     marginLeft: 5,
-    borderColor: "#CECECE",
+    borderRadius: 8,
+    color: "#71717a",
+    borderColor: "transparent",
+    backgroundColor: "#F4F4F5",
   },
 });

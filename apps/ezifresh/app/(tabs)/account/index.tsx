@@ -77,7 +77,7 @@ export default function MoreScreen() {
           </Avatar>
           <View>
             <Text className="text-2xl font-asap-semibold">{user?.fullName}</Text>
-            <Text className="text-muted-foreground">
+            <Text className="text-muted-foreground text-lg">
               {user?.phoneNumbers[0].phoneNumber}
             </Text>
           </View>
@@ -103,8 +103,8 @@ export default function MoreScreen() {
                 "flex flex-row items-center gap-4 border-muted p-4",
               )}
             >
-              <LogOut className="h-12 w-12 text-foreground/80" />
-              <Text className="text-lg">Log Out</Text>
+              <LogOut className="h-12 w-12 text-destructive" />
+              <Text className="text-lg text-destructive">Log Out</Text>
             </View>
           </Card>
         </Pressable>
