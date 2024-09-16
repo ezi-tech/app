@@ -92,7 +92,7 @@ export default function MoreScreen() {
               )}
             >
               <item.icon className="h-12 w-12 text-foreground/80" />
-              <Text className="text-lg">{item.title}</Text>
+              <Text className="text-xl">{item.title}</Text>
             </View>
           ))}
         </Card>
@@ -103,8 +103,8 @@ export default function MoreScreen() {
                 "flex flex-row items-center gap-4 border-muted p-4",
               )}
             >
-              <LogOut className="h-12 w-12 text-destructive" />
-              <Text className="text-lg text-destructive">Log Out</Text>
+              <LogOut className="h-12 w-12 text-red-500" />
+              <Text className="text-xl text-red-500">Log Out</Text>
             </View>
           </Card>
         </Pressable>
