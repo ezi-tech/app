@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { LogOut, Trash2 } from "lucide-react-native";
 import { Separator } from "@/components/ui/separator";
+import { TextField } from "@/components/ui/text-field";
 
 export default function ProfileScreen() {
   const { user } = useUser();
@@ -24,7 +25,6 @@ export default function ProfileScreen() {
   const [initialState, setInitialState] = useState({
     firstName: "",
     lastName: "",
-    email: "",
     phone: "",
   });
 
@@ -34,10 +34,9 @@ export default function ProfileScreen() {
     if (user) {
       const [firstName = "", lastName = ""] = user.fullName?.split(" ") ??
         ["", ""];
-      const email = user.emailAddresses?.[0]?.emailAddress || "";
       const phone = user.phoneNumbers?.[0]?.phoneNumber || "";
 
-      const newState = { firstName, lastName, email, phone };
+      const newState = { firstName, lastName, phone };
       setInitialState(newState);
       setState(newState);
     }
@@ -78,21 +77,18 @@ export default function ProfileScreen() {
           </Pressable>
           <Text className="text-lg font-semibold p-4 w-full">Profile</Text>
         </View>
-        <Card className="flex w-full flex-col items-center gap-4 rounded-2xl p-5">
-          <InputField
+        <Card className="flex w-full items-center gap-4 rounded-2xl p-5">
+          <TextField
             placeholder="First Name"
             value={state.firstName}
             onChangeText={(value) => handleChange("firstName", value)}
+            className="flex-grow w-full"
           />
-          <InputField
+          <TextField
             placeholder="Last Name"
             value={state.lastName}
             onChangeText={(value) => handleChange("lastName", value)}
-          />
-          <InputField
-            placeholder="Email"
-            value={state.email}
-            onChangeText={(value) => handleChange("email", value)}
+             className="flex-grow w-full"
           />
           <InputField
             placeholder="Phone"

@@ -23,9 +23,11 @@
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.0.2",
     "@rn-primitives/avatar": "^1.0.5",
-    "@rn-primitives/dialog": "^1.0.4",
+    "@rn-primitives/dropdown-menu": "^1.0.4",
     "@rn-primitives/label": "^1.0.4",
     "@rn-primitives/separator": "^1.0.4",
+    "@rn-primitives/portal": "^1.0.4",
+    "@rn-primitives/select": "^1.0.5",
     "@rn-primitives/slot": "^1.0.4",
     "@rn-primitives/types": "^1.0.4",
     "class-variance-authority": "^0.7.0",
@@ -40,6 +42,7 @@
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
+    "expo-updates": "~0.25.24",
     "expo-web-browser": "~13.0.3",
     "lucide-react-native": "catalog:",
     "nativewind": "catalog:",
@@ -58,7 +61,8 @@
     "tailwindcss": "catalog:",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "5.0.0-rc.2"
   },
   "packageManager": "pnpm@9.10.0",
   "devDependencies": {
