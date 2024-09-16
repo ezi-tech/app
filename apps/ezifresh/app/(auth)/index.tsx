@@ -5,27 +5,14 @@ import { useSignIn, useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  SafeAreaView,
-  View
-} from "react-native";
+import { ActivityIndicator, Image, SafeAreaView, View } from "react-native";
 import * as z from "zod";
-
-interface InputFieldProps {
-  placeholder: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  error?: string;
-}
-
 
 const signInSchema = z.object({
   phone: z
     .string()
     .min(10, { message: "Phone number is too short" })
-    .regex(/^\+254\d{9}$/, { message: "Invalid phone number" }),
+    .regex(/^\+254\d{9}$/, { message: "Please enter a valid phone number" }),
 });
 
 export default function SignInScreen() {
@@ -34,10 +21,11 @@ export default function SignInScreen() {
   const { signUp } = useSignUp();
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+254");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    SecureStore.getItemAsync("phone").then((value) => {
+    SecureStore.getItemAsync("phoneNumber").then((value) => {
       if (value) {
         setPhoneNumber(value);
       }
@@ -46,8 +34,8 @@ export default function SignInScreen() {
 
   const onSubmit = async () => {
     try {
-      const phone = `+254${phoneNumber}`;
-      const result = signInSchema.safeParse({ phone });
+      const fullPhone = `${countryCode}${phoneNumber}`;
+      const result = signInSchema.safeParse({ phone: fullPhone });
       if (!result.success) {
         const newErrors: { [key: string]: string } = {};
         result.error.errors.forEach((error: any) => {
@@ -57,9 +45,9 @@ export default function SignInScreen() {
       } else {
         setErrors({});
         setLoading(true);
-        await SecureStore.setItemAsync("phone", phone);
+        await SecureStore.setItemAsync("phoneNumber", phoneNumber);
         const signInAttempt = await signIn?.create({
-          identifier: phone,
+          identifier: fullPhone,
           strategy: "phone_code",
         });
         const phoneNumberId = signInAttempt?.supportedFirstFactors?.find(
@@ -68,7 +56,7 @@ export default function SignInScreen() {
         if (signInAttempt?.status === "needs_first_factor") {
           router.push({
             pathname: "/(auth)/otp",
-            params: { phone, type: "signIn", phoneNumberId },
+            params: { phone: fullPhone, type: "signIn", phoneNumberId },
           });
         } else if (signInAttempt?.status === "complete") {
           await setActive!({ session: signInAttempt.createdSessionId });
@@ -80,8 +68,7 @@ export default function SignInScreen() {
     } catch (err: any) {
       console.log("signInError", JSON.stringify(err, null, 2));
       if (err.errors[0].code === "form_identifier_not_found") {
-        console.log("signing up", phoneNumber);
-        const signUpAttempt = await signUp
+        await signUp
           ?.create({
             phoneNumber: `+254${phoneNumber}`,
           })
@@ -126,6 +113,8 @@ export default function SignInScreen() {
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             error={errors.phone}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
           />
         </View>
 

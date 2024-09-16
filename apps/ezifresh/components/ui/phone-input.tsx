@@ -9,11 +9,13 @@ export function PhoneInput({
   value,
   onChangeText,
   error,
+  countryCode,
 }: React.ComponentPropsWithoutRef<typeof TextInput> & {
   error?: string;
+  countryCode: string;
+  setCountryCode: (countryCode: string) => void;
 }) {
   const [isFocused, setIsFocused] = useState(false);
-  const [countryCode, setCountryCode] = useState("+254");
 
   return (
     <>
@@ -34,6 +36,7 @@ export function PhoneInput({
           )}
         >
           <TextInput
+            autoFocus={true}
             className={cn("text-xl")}
             placeholder={placeholder}
             value={value}
