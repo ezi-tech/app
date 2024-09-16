@@ -116,8 +116,8 @@ export default function MoreScreen() {
                 "flex flex-row items-center gap-4 border-muted p-4",
               )}
             >
-              <LogOut className="h-12 w-12 text-foreground/80" />
-              <Text className="text-lg">Log Out</Text>
+              <LogOut className="h-12 w-12 text-destructive" />
+              <Text className="text-lg text-destructive">Log Out</Text>
             </View>
           </Card>
         </Pressable>
