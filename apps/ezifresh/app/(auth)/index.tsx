@@ -20,7 +20,7 @@ interface InputFieldProps {
   error?: string;
 }
 
-const InputField = (
+export const InputField = (
   { placeholder, value, onChangeText, error }: InputFieldProps,
 ) => (
   <>
