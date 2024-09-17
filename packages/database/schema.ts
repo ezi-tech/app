@@ -1,18 +1,19 @@
+import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import {
-    boolean,
-    integer,
-    numeric,
-    pgTable,
-    serial,
-    text,
-    timestamp,
+  boolean,
+  numeric,
+  pgTable,
+  text,
+  timestamp
 } from "drizzle-orm/pg-core";
 
 export const addresses = pgTable("addresses", {
-  id: serial("id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
   name: text("name").notNull(),
-  userId: integer("user_id")
+  userId: text("user_id")
     .notNull()
     .references(() => users.id),
   latitude: numeric("latitude").notNull(),
@@ -30,7 +31,9 @@ export const addressRelations = relations(addresses, ({ one }) => ({
 }));
 
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").notNull().unique(),
