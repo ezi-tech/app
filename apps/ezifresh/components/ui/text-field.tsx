@@ -19,7 +19,7 @@ const TextField = React.forwardRef<
     >
       <TextInput
         ref={ref}
-        className={cn("rounded-xl text-xl placeholder:text-muted-foreground/40", props.editable === className)}
+        className={cn("rounded-xl text-xl placeholder:text-lg placeholder:text-muted-foreground/40", props.editable === className)}
         placeholderClassName={cn("text-muted-foreground", placeholderClassName)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
