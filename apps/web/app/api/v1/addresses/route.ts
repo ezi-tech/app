@@ -27,12 +27,10 @@ export const POST = withAuth(async ({ req, userId }) => {
       ...body,
       userId,
     });
-    const results = await db.insert(addresses).values(address);
+    const result = await db.insert(addresses).values(address).returning();
 
     return NextResponse.json({
-      data: {
-        addresses: results,
-      },
+      address: result,
     });
   } catch (error) {
     if (error instanceof ZodError) {
