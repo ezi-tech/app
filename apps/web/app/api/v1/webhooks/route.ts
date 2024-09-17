@@ -1,4 +1,5 @@
 import { getSMSClient } from "@/lib/africastalking";
+import { getEnv } from "@/lib/middleware/constants";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
@@ -6,7 +7,7 @@ import { Webhook } from "svix";
 import { db, users } from "@ezi/database";
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = getEnv("CLERK_WEBHOOK_SECRET");
 
   if (!WEBHOOK_SECRET) {
     throw new Error("Missing WEBHOOK_SECRET environment variable");
@@ -68,12 +69,16 @@ export async function POST(req: Request) {
       case "sms.created": {
         const sms = evt.data;
         const client = getSMSClient();
+        const isTestPhone = sms.to_phone_number.startsWith("+15555550");
 
-        await client.SMS.send({
-          from: process.env.AT_SENDER_ID || "EZITECH",
-          to: [sms.to_phone_number],
-          message: sms.message,
-        });
+        if (!isTestPhone) {
+          await client.SMS.send({
+            from: process.env.AT_SENDER_ID || "EZITECH",
+            to: [sms.to_phone_number],
+            message: sms.message,
+          });
+        }
+
         break;
       }
     }

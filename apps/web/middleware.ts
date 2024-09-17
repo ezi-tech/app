@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {
+  API_HOSTNAMES,
+  FRESH_HOSTNAMES,
+  SOKO_HOSTNAMES,
+} from "./lib/middleware/constants";
+
 export const config = {
   matcher: [
     /*
@@ -15,14 +21,21 @@ export const config = {
   ],
 };
 
-const SOKO_HOSTNAMES = ["ezisoko.shop"];
-const FRESH_HOSTNAMES = ["ezifresh.shop"];
-
 export default function middleware(req: NextRequest) {
   const host = req.headers.get("host") as string;
   const domain = host.replace("www.", "").toLowerCase();
 
-  if (SOKO_HOSTNAMES.includes(domain)) {
+  // path is the path of the URL (e.g. dub.sh/stats/github -> /stats/github)
+  let path = req.nextUrl.pathname;
+
+  // fullPath is the full URL path (along with search params)
+  const searchParams = req.nextUrl.searchParams.toString();
+  const searchParamsString = searchParams.length > 0 ? `?${searchParams}` : "";
+  const fullPath = `${path}${searchParamsString}`;
+
+  if (API_HOSTNAMES.has(domain)) {
+    return NextResponse.rewrite(new URL(`/api${fullPath}`, req.url));
+  } else if (SOKO_HOSTNAMES.includes(domain)) {
     return NextResponse.rewrite(new URL("/ezisoko.shop", req.url));
   } else if (FRESH_HOSTNAMES.includes(domain)) {
     return NextResponse.rewrite(new URL("/ezifresh.shop", req.url));
