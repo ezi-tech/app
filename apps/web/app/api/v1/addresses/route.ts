@@ -1,13 +1,12 @@
-import { getUserId, withAuth } from "@/lib/with-auth";
+import { withAuth } from "@/lib/with-auth";
 import { eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 import { insertAddressSchema } from "@ezi/api-schemas";
 import { addresses, db } from "@ezi/database";
 
-export const GET = withAuth(async (req: NextRequest) => {
-  const userId = getUserId(req);
+export const GET = withAuth(async ({ userId }) => {
   const results = await db
     .select()
     .from(addresses)
@@ -20,8 +19,7 @@ export const GET = withAuth(async (req: NextRequest) => {
   });
 });
 
-export const POST = withAuth(async (req: NextRequest) => {
-  const userId = getUserId(req);
+export const POST = withAuth(async ({ req, userId }) => {
   const body = await req.json();
 
   try {

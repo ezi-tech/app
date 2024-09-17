@@ -11,10 +11,14 @@ type ClerkJwtPayload = {
   sub: string;
 };
 
-export async function withAuth<T>(
-  cb: (req: NextRequest, ctx: T) => Promise<Response>,
+export function withAuth<T = {}>(
+  handler: (args: {
+    req: NextRequest;
+    params: T;
+    userId: string;
+  }) => Promise<Response>,
 ) {
-  return async function handle(req: NextRequest, ctx: T) {
+  return async (req: NextRequest, { params }: { params: T }) => {
     const { isSignedIn, token } = await clerkClient.authenticateRequest(req, {
       authorizedParties: ["https://example.com"],
     });
@@ -23,22 +27,9 @@ export async function withAuth<T>(
       return Response.json({ status: 401 });
     }
 
-    return cb(req, ctx);
+    const payload = jwtDecode(token) as unknown as ClerkJwtPayload;
+    const userId = payload.sub;
+
+    return handler({ req, params, userId });
   };
-}
-
-export function getUserId(req: NextRequest) {
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader) {
-    throw new Error("Authorization header is missing");
-  }
-
-  const token = authHeader.split(" ")[1];
-  const payload = jwtDecode(token) as ClerkJwtPayload;
-
-  if (!payload) {
-    throw new Error("Invalid token");
-  }
-
-  return payload.sub;
 }
