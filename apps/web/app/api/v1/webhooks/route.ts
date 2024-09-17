@@ -7,7 +7,7 @@ import { Webhook } from "svix";
 import { db, users } from "@ezi/database";
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = getEnv("CLERK_WEBHOOK_SECRET");
+  const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
 
   if (!WEBHOOK_SECRET) {
     throw new Error("Missing WEBHOOK_SECRET environment variable");

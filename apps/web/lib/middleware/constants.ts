@@ -13,12 +13,9 @@ export const API_HOSTNAMES = new Set([
  * If you pass the value `WEBHOOK_SECRET`, this function will return either
  * `FRESH_WEBHOOK_SECRET` or `SOKO_WEBHOOK_SECRET` depending on the hostname.
  */
-export function getEnv(env: string) {
-  const domain = process.env.VERCEL_URL?.replace("www.", "").toLowerCase();
-
-  if (!domain) {
-    return process.env[env];
-  }
+export function getEnv(req: Request, env: string) {
+  const host = req.headers.get("host") as string;
+  const domain = host.replace("www.", "").toLowerCase();
 
   if (SOKO_HOSTNAMES.includes(domain)) {
     return process.env[`SOKO_${env}`];
