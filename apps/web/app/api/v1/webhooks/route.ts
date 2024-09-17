@@ -10,6 +10,7 @@ export async function POST(req: Request) {
   const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
 
   if (!WEBHOOK_SECRET) {
+    console.error("Missing WEBHOOK_SECRET environment variable");
     throw new Error("Missing WEBHOOK_SECRET environment variable");
   }
 
