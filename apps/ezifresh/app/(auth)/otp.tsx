@@ -34,8 +34,8 @@ export default function OTPScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full gap-y-16 bg-white px-4 py-12">
-        <View className="flex w-full flex-col gap-y-4 p-3">
+      <View className="flex h-full w-full items-center justify-center gap-y-16 bg-white py-12">
+        <View className="flex absolute top-12 w-full flex-col gap-y-4 p-3">
           <View className="relative flex w-full flex-row items-center justify-start">
             <View className="absolute left-0">
               <ArrowLeft
@@ -56,64 +56,63 @@ export default function OTPScreen() {
             </Text>
           </View>
         </View>
-        <View className="flex w-full items-center gap-8">
-          <View className="w-full gap-4">
-            <OtpInput
-              numberOfDigits={6}
-              focusColor="#32BB78"
-              focusStickBlinkingDuration={500}
-              onTextChange={handleOtpChange}
-              onFilled={handleOtpFilled}
-              textInputProps={{ accessibilityLabel: "One-Time Password" }}
-              theme={{
-                pinCodeContainerStyle: {
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  marginLeft: 5,
-                  borderRadius: 8,
-                  borderColor: "transparent",
-                  backgroundColor: "#F4F4F5",
-                },
-                containerStyle: {
-                  width: "auto",
-                  padding: 4,
-                },
-                pinCodeTextStyle: {
-                  color: "#71717a",
-                },
-                focusedPinCodeContainerStyle: {
-                  backgroundColor: "#fff",
-                },
-              }}
-            />
-            {error && <Text className="text-center text-red-500">{error}</Text>}
-          </View>
+        
+        <View className="w-full gap-4 px-4">
+          <OtpInput
+            numberOfDigits={6}
+            focusColor="#32BB78"
+            focusStickBlinkingDuration={500}
+            onTextChange={handleOtpChange}
+            onFilled={handleOtpFilled}
+            textInputProps={{ accessibilityLabel: "One-Time Password" }}
+            theme={{
+              pinCodeContainerStyle: {
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                marginLeft: 5,
+                borderRadius: 8,
+                borderColor: "transparent",
+                backgroundColor: "#F4F4F5",
+              },
+              containerStyle: {
+                width: "auto",
+                padding: 4,
+              },
+              pinCodeTextStyle: {
+                color: "#71717a",
+              },
+              focusedPinCodeContainerStyle: {
+                backgroundColor: "#fff",
+              },
+            }}
+          />
+          {error && <Text className="text-center text-red-500">{error}</Text>}
+        </View>
 
-          <View className="w-full gap-8">
-            <Button
-              size="lg"
-              disabled={code.length < 6}
-              className="mx-auto flex w-full items-center rounded-xl"
-              onPress={() => handleOtpFilled(code)}
-            >
-              {loading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text>Continue</Text>
-              )}
-            </Button>
-            {timer === 0 ? (
-              <TouchableOpacity onPress={resendOtp}>
-                <Text className="text-center text-lg font-semibold">
-                  Resend OTP
-                </Text>
-              </TouchableOpacity>
+        <View className="absolute bottom-10 w-full gap-8 px-4">
+          <Button
+            size="lg"
+            disabled={code.length < 6}
+            className="native:h-16 flex w-full items-center justify-center rounded-full"
+            onPress={() => handleOtpFilled(code)}
+          >
+            {loading ? (
+              <ActivityIndicator color="white" />
             ) : (
-              <Text className="text-center text-lg text-muted-foreground">{`Resend in ${timer}s`}</Text>
+              <Text className="font-asap-medium native:text-xl">Continue</Text>
             )}
-          </View>
+          </Button>
+          {timer === 0 ? (
+            <TouchableOpacity onPress={resendOtp}>
+              <Text className="text-center text-lg font-semibold">
+                Resend OTP
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <Text className="text-center text-lg text-muted-foreground">{`Resend in ${timer}s`}</Text>
+          )}
         </View>
       </View>
     </SafeAreaView>

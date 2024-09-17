@@ -1,11 +1,9 @@
-import { Tabs } from "expo-router";
-import React from "react";
-
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import FeatherIcons from "@expo/vector-icons/Feather";
 import { type IconProps } from "@expo/vector-icons/build/createIconSet";
-import { type ComponentProps } from "react";
+import FeatherIcons from "@expo/vector-icons/Feather";
+import { Tabs, usePathname } from "expo-router";
+import type { ComponentProps } from "react";
+import React from "react";
+import { Platform } from "react-native";
 
 function TabBarIcon({
   style,
@@ -17,21 +15,27 @@ function TabBarIcon({
 }
 
 export default function TabLayout() {
-  const{ colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
+  const pathname = usePathname();
+  const isNestedAccountScreen =
+    pathname.startsWith("/account/") &&
+    !["/account", "/account/"].includes(pathname);
+
+  const showTabBar = !isNestedAccountScreen && pathname !== "/home/location";
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: "#32b379",
         headerShown: false,
         tabBarStyle: {
-          height: 60,
+          height: Platform.OS === "ios" ? 76 : 56,
           paddingVertical: 5,
-        }
+          display: showTabBar ? "flex" : "none",
+        },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
@@ -51,6 +55,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="cart"
         options={{
+          tabBarBadge: 3,
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="shopping-cart" color={color} size={26} />

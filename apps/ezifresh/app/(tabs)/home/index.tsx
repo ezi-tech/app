@@ -1,11 +1,13 @@
 import { Text } from "@/components/ui/text";
+import { iconWithClassName } from "@/lib/icons/iconWithClassName";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@apollo/client";
 import { useAuth } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 import {
   AlarmClock,
   Bike,
   ChevronRight,
+  ChevronRightIcon,
   MapPin,
   Search,
   SlidersHorizontal,
@@ -15,56 +17,72 @@ import React from "react";
 import {
   FlatList,
   Image,
+  Platform,
   Pressable,
+  SafeAreaView,
   ScrollView,
+  StatusBar,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  listProductsQuery,
-  useProducts,
-} from "../../../../packages/shopify/src";
-import { useRouter } from "expo-router";
+
+import { useProducts } from "@ezi/shopify";
+
 export default function HomeScreen() {
   const { signOut } = useAuth();
   const [value, onChangeText] = React.useState("");
   return (
-    <ScrollView className="bg-white">
-      <SafeAreaView>
-        <View className="flex flex-col bg-white h-full items-start justify-start">
-          <View className="flex flex-col p-5 w-full items-start h-full justify-start gap-5 bg-white">
+    <View className={cn("h-full w-full bg-white pt-2")}>
+      <SafeAreaView
+        className={cn("h-full w-full", Platform.OS !== "ios" && "mt-12")}
+      >
+        <ScrollView className="bg-white">
+          <View className="flex gap-6">
             <ChangeLocation />
-            <View className="relative flex flex-row w-full items-center justify-start bg-[#F5F6F8] p-5 rounded-xl gap-4">
-              <Search size={24} color="gray" onPress={() => signOut()} />
-              <TextInput
-                className={cn(
-                  "bg-transparent flex flex-1 placeholder:text-black placeholder:text-[15px] text-[15px] text-black",
-                )}
-                placeholder="Search for products"
-                value={value}
-                onChangeText={onChangeText}
-              />
-              <SlidersHorizontal size={24} color="gray" />
+            <View className="flex h-full w-full flex-col items-start justify-start gap-5 px-5">
+              <View className="relative flex w-full flex-row items-center justify-start gap-4 rounded-xl bg-[#F5F6F8] p-5">
+                <Search size={24} color="gray" onPress={() => signOut()} />
+                <TextInput
+                  className={cn(
+                    "flex flex-1 bg-transparent text-[15px] text-black placeholder:text-[15px] placeholder:text-black",
+                  )}
+                  placeholder="Search for products"
+                  value={value}
+                  onChangeText={onChangeText}
+                />
+                <SlidersHorizontal size={24} color="gray" />
+              </View>
+              <ProductsSection />
+              <VendorsSection />
             </View>
-            <ProductsSection />
-            <VendorsSection />
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
-    </ScrollView>
+
+      <StatusBar barStyle="dark-content" />
+    </View>
   );
 }
 
 const ChangeLocation = () => {
+  iconWithClassName(ChevronRightIcon);
+
+  const router = useRouter();
+
   return (
-    <View className="flex flex-row w-full gap-3 items-center">
-      <MapPin size={24} color="#000000" />
-      <Text className="justify-center text-black text-lg font-normal">
-        Naina 4, 1st Floor, Gitaru Kenya
-      </Text>
-    </View>
+    <TouchableOpacity onPress={() => router.push("/home/location")}>
+      <View className="flex w-full flex-row items-center gap-2 px-5">
+        <MapPin size={24} strokeWidth={2} className="text-foreground" />
+        <Text className="justify-center text-xl text-foreground">
+          Naina 4, 1st Floor, Gitaru Kenya
+        </Text>
+        <ChevronRightIcon
+          size={24}
+          className="ml-auto justify-end self-end text-muted-foreground"
+        />
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -109,26 +127,26 @@ const ProductsSection = () => {
   if (error) return <Text>Error: {error.message}</Text>;
   const products = data?.products?.edges.map((edge) => edge.node);
   return (
-    <View className="flex flex-col w-full items-start justify-start gap-5">
-      <View className="w-full flex flex-row justify-between items-center">
-        <Text className="text-black text-lg font-bold">Popular Products</Text>
-        <TouchableOpacity className="w-fit flex flex-row items-center gap-1 text-black text-[15px] font-bold px-4 py-2">
-          <Text className="font-medium">
-            All
-          </Text>
+    <View className="flex w-full flex-col items-start justify-start gap-5">
+      <View className="flex w-full flex-row items-center justify-between">
+        <Text className="text-lg font-bold text-black">Popular Products</Text>
+        <TouchableOpacity className="flex w-fit flex-row items-center gap-1 px-4 py-2 text-[15px] font-bold text-black">
+          <Text className="font-medium">All</Text>
           <ChevronRight size={20} color="black" />
         </TouchableOpacity>
       </View>
       <FlatList
         data={products}
         renderItem={({ item }) => (
-          <View className="pr-4">
+          <View className="pr-6">
             <ProductCard
               id={item.id}
               name={item.title}
               price={item.variants.edges[0].node.price.amount}
-              image={item.images.edges[1]?.node.url ??
-                "https://picsa.pro/profile.jpg"}
+              image={
+                item.images.edges[1]?.node.url ??
+                "https://picsa.pro/profile.jpg"
+              }
             />
           </View>
         )}
@@ -149,13 +167,19 @@ interface Product {
   ratingCount: number;
 }
 
-const ProductCard = (
-  { id, name, image, price, time, rating, ratingCount }: any,
-) => {
+const ProductCard = ({
+  id,
+  name,
+  image,
+  price,
+  time,
+  rating,
+  ratingCount,
+}: any) => {
   const router = useRouter();
   return (
     <Pressable
-      className="flex flex-col items-start justify-start w-60 gap-2"
+      className="flex w-52 flex-col items-start justify-start gap-2 rounded-xl border border-border p-4"
       onPress={() => {
         router.push({
           pathname: "/product",
@@ -170,7 +194,7 @@ const ProductCard = (
           source={{
             uri: image,
           }}
-          className="w-full h-36 rounded-md"
+          className="h-36 w-full rounded-md"
           resizeMode="contain"
         />
         {/* <View className="absolute bottom-2 right-2 rounded-md flex flex-row w-fit bg-white p-[6px] gap-1 items-center">
@@ -184,17 +208,17 @@ const ProductCard = (
         </View> */}
       </View>
       <View>
-        <Text className="font-semibold text-lg">{name}</Text>
-        <View className="flex flex-row items-center w-full gap-2">
-          <View className="flex flex-row items-center gap-1 w-fit">
+        <Text className="text-lg font-semibold">{name}</Text>
+        <View className="flex w-full flex-row items-center gap-2">
+          <View className="flex w-fit flex-row items-center gap-1">
             <Bike size={14} color="gray" />
-            <Text className="font-medium text-sm text-gray-500">
+            <Text className="text-sm font-medium text-gray-500">
               Ksh {price}
             </Text>
           </View>
-          <View className="flex flex-row items-center gap-1 w-fit">
+          <View className="flex w-fit flex-row items-center gap-1">
             <AlarmClock size={14} color="gray" />
-            <Text className="font-medium text-sm text-gray-500">50-60 min</Text>
+            <Text className="text-sm font-medium text-gray-500">50-60 min</Text>
           </View>
         </View>
       </View>
@@ -248,13 +272,11 @@ interface Vendor {
 
 const VendorsSection = () => {
   return (
-    <View className="flex flex-col w-full items-start justify-start gap-5">
-      <View className="w-full flex flex-row justify-between items-center">
-        <Text className="text-black text-lg font-bold">Popular Vendors</Text>
-        <TouchableOpacity className="w-fit flex flex-row items-center gap-1 text-black text-[15px] font-bold px-4 py-2">
-          <Text className="font-medium">
-            All
-          </Text>
+    <View className="flex w-full flex-col items-start justify-start gap-5">
+      <View className="flex w-full flex-row items-center justify-between">
+        <Text className="text-lg font-bold text-black">Popular Vendors</Text>
+        <TouchableOpacity className="flex w-fit flex-row items-center gap-1 px-4 py-2 text-[15px] font-bold text-black">
+          <Text className="font-medium">All</Text>
           <ChevronRight size={20} color="black" />
         </TouchableOpacity>
       </View>
@@ -273,41 +295,46 @@ const VendorsSection = () => {
   );
 };
 
-const VendorCard = (
-  { name, image, price, time, rating, ratingCount }: Vendor,
-) => {
+const VendorCard = ({
+  name,
+  image,
+  price,
+  time,
+  rating,
+  ratingCount,
+}: Vendor) => {
   return (
-    <View className="flex flex-col items-start justify-start min-w-full gap-2">
+    <View className="flex min-w-full flex-col items-start justify-start gap-2">
       <View className="relative w-full">
         <Image
           source={{
             uri: image,
           }}
-          className="w-full h-40 rounded-md"
+          className="h-40 w-full rounded-md"
           resizeMode="cover"
         />
-        <View className="absolute bottom-2 right-2 rounded-md flex flex-row w-fit bg-white p-[6px] gap-1 items-center">
+        <View className="absolute bottom-2 right-2 flex w-fit flex-row items-center gap-1 rounded-md bg-white p-[6px]">
           <Star size={14} color="black" />
-          <Text className="font-bold text-sm text-black">
+          <Text className="text-sm font-bold text-black">
             {rating}{" "}
-            <Text className="font-normal text-sm text-black">
+            <Text className="text-sm font-normal text-black">
               ({ratingCount})
             </Text>
           </Text>
         </View>
       </View>
       <View>
-        <Text className="font-semibold text-lg">{name}</Text>
-        <View className="flex flex-row items-center w-full gap-2">
-          <View className="flex flex-row items-center gap-1 w-fit">
+        <Text className="text-lg font-semibold">{name}</Text>
+        <View className="flex w-full flex-row items-center gap-2">
+          <View className="flex w-fit flex-row items-center gap-1">
             <Bike size={14} color="gray" />
-            <Text className="font-medium text-sm text-gray-500">
+            <Text className="text-sm font-medium text-gray-500">
               Ksh {price}
             </Text>
           </View>
-          <View className="flex flex-row items-center gap-1 w-fit">
+          <View className="flex w-fit flex-row items-center gap-1">
             <AlarmClock size={14} color="gray" />
-            <Text className="font-medium text-sm text-gray-500">50-60 min</Text>
+            <Text className="text-sm font-medium text-gray-500">50-60 min</Text>
           </View>
         </View>
       </View>

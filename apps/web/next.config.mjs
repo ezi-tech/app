@@ -1,3 +1,5 @@
+import { withTypedHandlers } from "typed-handlers/next";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -9,4 +11,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withTypedHandlers(nextConfig);

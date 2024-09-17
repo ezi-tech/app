@@ -11,7 +11,7 @@ import {
   Image,
   SafeAreaView,
   TextInput,
-  View,
+  View
 } from "react-native";
 
 interface InputFieldProps {
@@ -66,45 +66,42 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full flex-col items-center justify-center gap-36 bg-white p-8">
+      <View className="flex h-full w-full flex-col items-center justify-center bg-white p-8">
         <Image
           source={{
             uri: "https://assets.ezifarmer.com/ezifresh.png",
           }}
-          className={cn(
-            "h-16 w-full object-contain",
-            isKeyboardVisible && "absolute top-20",
-          )}
+          className={cn("absolute top-24 h-16 w-full object-contain")}
           resizeMode="contain"
         />
-        <View className="flex w-full flex-col gap-3">
-          <PhoneInput
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            error={error || ""}
-            countryCode={countryCode}
-            setCountryCode={setCountryCode}
-          />
-        </View>
+        <PhoneInput
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          error={error || ""}
+          countryCode={countryCode}
+          setCountryCode={setCountryCode}
+        />
 
         <View
           className={cn(
-            "w-full items-center justify-center gap-4",
-            isKeyboardVisible && "absolute bottom-10",
+            "absolute bottom-8 w-full items-center justify-center gap-4",
           )}
         >
-          <View className="flex flex-row flex-wrap items-center gap-1">
-            <Text className="text-muted-foreground">
-              By continuing, you agree to our
-            </Text>
+          <Text className="text-center text-muted-foreground">
+            If you sign up,{" "}
             <Text className="text-muted-foreground underline">
               Terms of Service
-            </Text>
-          </View>
+            </Text>{" "}
+            and{" "}
+            <Text className="text-muted-foreground underline">
+              Privacy Policy
+            </Text>{" "}
+            apply
+          </Text>
           <Button
             size="lg"
-            className="flex w-full items-center rounded-xl"
+            className="native:h-16 flex w-full items-center justify-center rounded-full"
             onPress={() => {
               setStashedPhone(phoneNumber);
               handleSignIn();
@@ -113,7 +110,7 @@ export default function SignInScreen() {
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text>Continue</Text>
+              <Text className="font-asap-medium native:text-xl">Continue</Text>
             )}
           </Button>
         </View>

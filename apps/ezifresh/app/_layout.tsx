@@ -26,6 +26,7 @@ const InitialLayout: React.FC = () => {
     Asap_600SemiBold,
   });
 
+
   useEffect(() => {
     if (fontsLoaded && isLoaded) {
       setIsMounted(true);
@@ -37,7 +38,7 @@ const InitialLayout: React.FC = () => {
     Bootsplash.hide({ fade: true });
 
     if (isSignedIn) {
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/home");
     } else {
       router.replace("/(auth)");
     }
