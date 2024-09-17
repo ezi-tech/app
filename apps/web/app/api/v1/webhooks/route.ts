@@ -1,5 +1,5 @@
 import { getSMSClient } from "@/lib/africastalking";
-import { getEnv } from "@/lib/middleware/constants";
+import { getEnv } from "@/lib/middleware/utils";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Webhook } from "svix";

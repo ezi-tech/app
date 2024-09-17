@@ -2,6 +2,8 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { decode as jwtDecode } from "jsonwebtoken";
 import { NextRequest } from "next/server";
 
+import { getEnv, getPublicEnv } from "./middleware/utils";
+
 type ClerkJwtPayload = {
   exp: number;
   iat: number;
@@ -20,7 +22,8 @@ export function withAuth<T = {}>(
 ) {
   return async (req: NextRequest, { params }: { params: T }) => {
     const { isSignedIn, token } = await clerkClient.authenticateRequest(req, {
-      authorizedParties: ["https://example.com"],
+      secretKey: getEnv(req, "CLERK_SECRET_KEY"),
+      publishableKey: getPublicEnv(req, "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"),
     });
 
     if (!isSignedIn) {

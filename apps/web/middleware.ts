@@ -4,7 +4,7 @@ import {
   API_HOSTNAMES,
   FRESH_HOSTNAMES,
   SOKO_HOSTNAMES,
-} from "./lib/middleware/constants";
+} from "./lib/middleware/utils";
 
 export const config = {
   matcher: [

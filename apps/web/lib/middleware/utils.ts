@@ -41,3 +41,18 @@ export function getEnv(req: Request, env: string) {
 
   return process.env[envKey];
 }
+
+export function getPublicEnv(req: Request, env: string) {
+  const host = req.headers.get("host") as string;
+  const domain = host.replace("www.", "").toLowerCase();
+
+  let envKey = env;
+
+  if (isSokoDomain(domain)) {
+    envKey = env.replace("NEXT_PUBLIC", "NEXT_PUBLIC_SOKO");
+  } else if (isFreshDomain(domain)) {
+    envKey = env.replace("NEXT_PUBLIC", "NEXT_PUBLIC_FRESH");
+  }
+
+  return process.env[envKey];
+}
