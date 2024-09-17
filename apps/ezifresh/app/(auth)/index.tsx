@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { Text } from "@/components/ui/text";
+import { useKeyboard } from "@/hooks/useKeyboard";
+import { useSecureStore } from "@/hooks/useSecureStore";
+import { useSignInFlow } from "@/hooks/useSignInFlow";
+import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
-  Pressable,
+  Image,
   SafeAreaView,
   TextInput,
   View,
 } from "react-native";
-import { Text } from "@/components/ui/text";
-import { useRouter } from "expo-router";
-import { cn } from "@/lib/utils";
-import * as z from "zod";
-import { useSignIn } from "@clerk/clerk-expo";
 
 interface InputFieldProps {
   placeholder: string;
@@ -20,120 +21,101 @@ interface InputFieldProps {
   error?: string;
 }
 
-export const InputField = (
-  { placeholder, value, onChangeText, error }: InputFieldProps,
-) => (
+export const InputField = ({
+  placeholder,
+  value,
+  onChangeText,
+  error,
+}: InputFieldProps) => (
   <>
-    <TextInput
-      className={cn(
-        "bg-[#F5F6F8] w-full p-5 rounded-xl placeholder:text-black placeholder:text-[15px] text-[15px] text-black",
-      )}
-      placeholder={placeholder}
-      value={value}
-      onChangeText={onChangeText}
-    />
-    {error && <Text className="text-red-500 text-[12px]">{error}</Text>}
+    <View className="flex w-full flex-row items-center gap-4">
+      <TextInput
+        value="+254"
+        className="rounded-xl bg-muted p-5 px-8 text-lg"
+      />
+      <TextInput
+        className={cn("flex-grow rounded-xl bg-muted p-5 text-lg")}
+        placeholder={placeholder}
+        value={value}
+        onChangeText={onChangeText}
+      />
+    </View>
+    {error && <Text className="text-[12px] text-red-500">{error}</Text>}
   </>
 );
-const signInSchema = z.object({
-  phone: z.string(),
-});
+
+const PHONE_STASH_KEY = "phoneNumber";
 
 export default function SignInScreen() {
-  const router = useRouter();
-  const { signIn, setActive } = useSignIn();
-  const [loading, setLoading] = useState(false);
-  const [phone, setPhone] = useState("+2547");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { isKeyboardVisible } = useKeyboard();
+  const { value: stashedPhone, setItem: setStashedPhone } =
+    useSecureStore(PHONE_STASH_KEY);
 
-  const onSubmit = async () => {
-    try {
-      const result = signInSchema.safeParse({ phone });
-      if (!result.success) {
-        const newErrors: { [key: string]: string } = {};
-        result.error.errors.forEach((error: any) => {
-          newErrors[error.path[0]] = error.message;
-        });
-        setErrors(newErrors);
-      } else {
-        setErrors({});
-        setLoading(true);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+254");
+  const { error, loading, handleSignIn } = useSignInFlow({
+    countryCode,
+    phoneNumber,
+  });
 
-        const signInAttempt = await signIn?.create({
-          identifier: phone,
-          strategy: "phone_code",
-        });
-        console.log(JSON.stringify(signInAttempt, null, 2));
-        const phoneNumberId = signInAttempt?.supportedFirstFactors?.find(
-          (factor) => factor.strategy === "phone_code",
-        )?.phoneNumberId;
-        console.log(phoneNumberId);
-        if (signInAttempt?.status === "needs_first_factor") {
-          router.push({
-            pathname: "/(auth)/otp",
-            params: { phone, type: "signIn", phoneNumberId },
-          });
-        } else if (signInAttempt?.status === "complete") {
-          await setActive!({ session: signInAttempt.createdSessionId });
-          router.replace({
-            pathname: "/(tabs)",
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log(JSON.stringify(err, null, 2));
+  useEffect(() => {
+    if (stashedPhone && !phoneNumber) {
+      setPhoneNumber(stashedPhone);
     }
-    setLoading(false);
-  };
+  }, [stashedPhone]);
 
   return (
-    <SafeAreaView className="flex flex-col bg-white h-full items-center justify-center">
-      <View className="flex flex-col p-5 w-full items-start h-full justify-center gap-5">
-        <View className="flex w-full items-center">
-          <Text className="justify-center text-black text-3xl font-semibold">
-            Enter your details
-          </Text>
-        </View>
-
-        <View className="flex flex-col w-full gap-3">
-          <InputField
+    <SafeAreaView>
+      <View className="flex h-full w-full flex-col items-center justify-center gap-36 bg-white p-8">
+        <Image
+          source={{
+            uri: "https://assets.ezifarmer.com/ezifresh.png",
+          }}
+          className={cn(
+            "h-16 w-full object-contain",
+            isKeyboardVisible && "absolute top-20",
+          )}
+          resizeMode="contain"
+        />
+        <View className="flex w-full flex-col gap-3">
+          <PhoneInput
             placeholder="Phone Number"
-            value={phone}
-            onChangeText={setPhone}
-            error={errors.phone}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            error={error || ""}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
           />
         </View>
 
-        <View className="w-full">
-          <Pressable
-            className="flex w-full p-5 items-center rounded-full bg-[#32BB78]"
-            onPress={onSubmit}
-          >
-            {loading
-              ? <ActivityIndicator color="white" />
-              : (
-                <Text className="text-white text-[15px] font-bold">
-                  Sign In
-                </Text>
-              )}
-          </Pressable>
-        </View>
-        <View className="flex items-center justify-center w-full">
-          <Text className="text-black text-[14px]">
-            Don't have an account?
-            <Text
-              className="text-blue-500 font-medium cursor-pointer"
-              onPress={() => router.push("/(auth)/register")}
-            >
-              Sign up
+        <View
+          className={cn(
+            "w-full items-center justify-center gap-4",
+            isKeyboardVisible && "absolute bottom-10",
+          )}
+        >
+          <View className="flex flex-row flex-wrap items-center gap-1">
+            <Text className="text-muted-foreground">
+              By continuing, you agree to our
             </Text>
-          </Text>
-        </View>
-        <View className="flex w-full items-center">
-          <Text className="text-black text-[14px]">
-            By signing in, you agree to our
-            <Text className="text-blue-500">Terms of Service</Text>
-          </Text>
+            <Text className="text-muted-foreground underline">
+              Terms of Service
+            </Text>
+          </View>
+          <Button
+            size="lg"
+            className="flex w-full items-center rounded-xl"
+            onPress={() => {
+              setStashedPhone(phoneNumber);
+              handleSignIn();
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text>Continue</Text>
+            )}
+          </Button>
         </View>
       </View>
     </SafeAreaView>

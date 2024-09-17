@@ -1,5 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@apollo/client";
 import { useAuth } from "@clerk/clerk-expo";
 import {
   AlarmClock,
@@ -8,46 +9,51 @@ import {
   MapPin,
   Search,
   SlidersHorizontal,
-  Star
+  Star,
 } from "lucide-react-native";
 import React from "react";
 import {
   FlatList,
   Image,
+  Pressable,
   ScrollView,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import {
+  listProductsQuery,
+  useProducts,
+} from "../../../../packages/shopify/src";
+import { useRouter } from "expo-router";
 export default function HomeScreen() {
   const { signOut } = useAuth();
   const [value, onChangeText] = React.useState("");
   return (
-      <ScrollView className="bg-white">
-        <SafeAreaView>
+    <ScrollView className="bg-white">
+      <SafeAreaView>
         <View className="flex flex-col bg-white h-full items-start justify-start">
-        <View className="flex flex-col p-5 w-full items-start h-full justify-start gap-5 bg-white">
-          <ChangeLocation />
-          <View className="relative flex flex-row w-full items-center justify-start bg-[#F5F6F8] p-5 rounded-xl gap-4">
-            <Search size={24} color="gray" onPress={()=> signOut()} />
-            <TextInput
-              className={cn(
-                "bg-transparent flex flex-1 placeholder:text-black placeholder:text-[15px] text-[15px] text-black",
-              )}
-              placeholder="Search for products"
-              value={value}
-              onChangeText={onChangeText}
-            />
-            <SlidersHorizontal size={24} color="gray" />
+          <View className="flex flex-col p-5 w-full items-start h-full justify-start gap-5 bg-white">
+            <ChangeLocation />
+            <View className="relative flex flex-row w-full items-center justify-start bg-[#F5F6F8] p-5 rounded-xl gap-4">
+              <Search size={24} color="gray" onPress={() => signOut()} />
+              <TextInput
+                className={cn(
+                  "bg-transparent flex flex-1 placeholder:text-black placeholder:text-[15px] text-[15px] text-black",
+                )}
+                placeholder="Search for products"
+                value={value}
+                onChangeText={onChangeText}
+              />
+              <SlidersHorizontal size={24} color="gray" />
+            </View>
+            <ProductsSection />
+            <VendorsSection />
           </View>
-          <ProductsSection />
-          <VendorsSection />
         </View>
-      </View>
       </SafeAreaView>
-      </ScrollView>
+    </ScrollView>
   );
 }
 
@@ -62,42 +68,46 @@ const ChangeLocation = () => {
   );
 };
 
-const products: Product[] = [
-  {
-    name: "Bananas",
-    image: "https://picsa.pro/profile.jpg",
-    price: 10,
-    time: 50,
-    rating: 4.5,
-    ratingCount: 135,
-  },
-  {
-    name: "Mangoes",
-    image: "https://picsa.pro/profile.jpg",
-    price: 20,
-    time: 50,
-    rating: 4.5,
-    ratingCount: 235,
-  },
-  {
-    name: "Spinach",
-    image: "https://picsa.pro/profile.jpg",
-    price: 20,
-    time: 50,
-    rating: 3.5,
-    ratingCount: 35,
-  },
-  {
-    name: "Tomatoes",
-    image: "https://picsa.pro/profile.jpg",
-    price: 20,
-    time: 50,
-    rating: 2.5,
-    ratingCount: 115,
-  },
-];
+// const products: Product[] = [
+//   {
+//     name: "Bananas",
+//     image: "https://picsa.pro/profile.jpg",
+//     price: 10,
+//     time: 50,
+//     rating: 4.5,
+//     ratingCount: 135,
+//   },
+//   {
+//     name: "Mangoes",
+//     image: "https://picsa.pro/profile.jpg",
+//     price: 20,
+//     time: 50,
+//     rating: 4.5,
+//     ratingCount: 235,
+//   },
+//   {
+//     name: "Spinach",
+//     image: "https://picsa.pro/profile.jpg",
+//     price: 20,
+//     time: 50,
+//     rating: 3.5,
+//     ratingCount: 35,
+//   },
+//   {
+//     name: "Tomatoes",
+//     image: "https://picsa.pro/profile.jpg",
+//     price: 20,
+//     time: 50,
+//     rating: 2.5,
+//     ratingCount: 115,
+//   },
+// ];
 
 const ProductsSection = () => {
+  const { loading, error, data } = useProducts();
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
+  const products = data?.products?.edges.map((edge) => edge.node);
   return (
     <View className="flex flex-col w-full items-start justify-start gap-5">
       <View className="w-full flex flex-row justify-between items-center">
@@ -113,10 +123,16 @@ const ProductsSection = () => {
         data={products}
         renderItem={({ item }) => (
           <View className="pr-4">
-            <ProductCard {...item} />
+            <ProductCard
+              id={item.id}
+              name={item.title}
+              price={item.variants.edges[0].node.price.amount}
+              image={item.images.edges[1]?.node.url ??
+                "https://picsa.pro/profile.jpg"}
+            />
           </View>
         )}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.title}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
@@ -134,18 +150,30 @@ interface Product {
 }
 
 const ProductCard = (
-  { name, image, price, time, rating, ratingCount }: Product,
+  { id, name, image, price, time, rating, ratingCount }: any,
 ) => {
+  const router = useRouter();
   return (
-    <View className="flex flex-col items-start justify-start w-60 gap-2">
+    <Pressable
+      className="flex flex-col items-start justify-start w-60 gap-2"
+      onPress={() => {
+        router.push({
+          pathname: "/product",
+          params: {
+            id,
+          },
+        });
+      }}
+    >
       <View className="relative w-full">
         <Image
           source={{
             uri: image,
           }}
           className="w-full h-36 rounded-md"
+          resizeMode="contain"
         />
-        <View className="absolute bottom-2 right-2 rounded-md flex flex-row w-fit bg-white p-[6px] gap-1 items-center">
+        {/* <View className="absolute bottom-2 right-2 rounded-md flex flex-row w-fit bg-white p-[6px] gap-1 items-center">
           <Star size={14} color="black" />
           <Text className="font-bold text-sm text-black">
             {rating}{" "}
@@ -153,7 +181,7 @@ const ProductCard = (
               ({ratingCount})
             </Text>
           </Text>
-        </View>
+        </View> */}
       </View>
       <View>
         <Text className="font-semibold text-lg">{name}</Text>
@@ -170,7 +198,7 @@ const ProductCard = (
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -231,7 +259,7 @@ const VendorsSection = () => {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={products}
+        data={vendors}
         renderItem={({ item }) => (
           <View className="pb-4">
             <VendorCard {...item} />
@@ -256,6 +284,7 @@ const VendorCard = (
             uri: image,
           }}
           className="w-full h-40 rounded-md"
+          resizeMode="cover"
         />
         <View className="absolute bottom-2 right-2 rounded-md flex flex-row w-fit bg-white p-[6px] gap-1 items-center">
           <Star size={14} color="black" />
