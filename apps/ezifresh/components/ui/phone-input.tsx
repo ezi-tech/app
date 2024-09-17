@@ -40,6 +40,7 @@ export function PhoneInput({
             className={cn("text-xl")}
             placeholder={placeholder}
             value={value}
+            inputMode="numeric"
             onChangeText={onChangeText}
             underlineColorAndroid="transparent"
             onFocus={() => setIsFocused(true)}

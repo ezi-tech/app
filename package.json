@@ -14,6 +14,7 @@
   },
   "packageManager": "pnpm@9.10.0",
   "devDependencies": {
+    "@clerk/types": "^4.21.0",
     "@ezi/prettier-config": "workspace:*",
     "@turbo/gen": "^2.1.1",
     "prettier": "catalog:",

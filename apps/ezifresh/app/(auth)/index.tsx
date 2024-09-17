@@ -1,19 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { Text } from "@/components/ui/text";
+import { useKeyboard } from "@/hooks/useKeyboard";
+import { useSecureStore } from "@/hooks/useSecureStore";
+import { useSignInFlow } from "@/hooks/useSignInFlow";
 import { cn } from "@/lib/utils";
-import { useSignIn, useSignUp } from "@clerk/clerk-expo";
-import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
   SafeAreaView,
   TextInput,
-  View
+  View,
 } from "react-native";
-import * as z from "zod";
 
 interface InputFieldProps {
   placeholder: string;
@@ -22,9 +21,12 @@ interface InputFieldProps {
   error?: string;
 }
 
-export const InputField = (
-  { placeholder, value, onChangeText, error }: InputFieldProps,
-) => (
+export const InputField = ({
+  placeholder,
+  value,
+  onChangeText,
+  error,
+}: InputFieldProps) => (
   <>
     <View className="flex w-full flex-row items-center gap-4">
       <TextInput
@@ -41,94 +43,26 @@ export const InputField = (
     {error && <Text className="text-[12px] text-red-500">{error}</Text>}
   </>
 );
-const signInSchema = z.object({
-  phone: z
-    .string()
-    .min(10, { message: "Phone number is too short" })
-    .regex(/^\+254\d{9}$/, { message: "Please enter a valid phone number" }),
-});
+
+const PHONE_STASH_KEY = "phoneNumber";
 
 export default function SignInScreen() {
-  const router = useRouter();
-  const { signIn, setActive } = useSignIn();
-  const { signUp } = useSignUp();
-  const [loading, setLoading] = useState(false);
+  const { isKeyboardVisible } = useKeyboard();
+  const { value: stashedPhone, setItem: setStashedPhone } =
+    useSecureStore(PHONE_STASH_KEY);
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("+254");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { error, loading, handleSignIn } = useSignInFlow({
+    countryCode,
+    phoneNumber,
+  });
 
   useEffect(() => {
-    SecureStore.getItemAsync("phoneNumber").then((value) => {
-      if (value) {
-        setPhoneNumber(value);
-      }
-    });
-  }, []);
-
-  const onSubmit = async () => {
-    try {
-      const fullPhone = `${countryCode}${phoneNumber}`;
-      const result = signInSchema.safeParse({ phone: fullPhone });
-      if (!result.success) {
-        const newErrors: { [key: string]: string } = {};
-        result.error.errors.forEach((error: any) => {
-          newErrors[error.path[0]] = error.message;
-        });
-        setErrors(newErrors);
-      } else {
-        setErrors({});
-        setLoading(true);
-        await SecureStore.setItemAsync("phoneNumber", phoneNumber);
-        const signInAttempt = await signIn?.create({
-          identifier: fullPhone,
-          strategy: "phone_code",
-        });
-        const phoneNumberId = signInAttempt?.supportedFirstFactors?.find(
-          (factor) => factor.strategy === "phone_code",
-        )?.phoneNumberId;
-        if (signInAttempt?.status === "needs_first_factor") {
-          router.push({
-            pathname: "/(auth)/otp",
-            params: { phone: fullPhone, type: "signIn", phoneNumberId },
-          });
-        } else if (signInAttempt?.status === "complete") {
-          await setActive!({ session: signInAttempt.createdSessionId });
-          router.replace({
-            pathname: "/(tabs)",
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log("signInError", JSON.stringify(err, null, 2));
-      if (err.errors[0].code === "form_identifier_not_found") {
-        await signUp
-          ?.create({
-            phoneNumber: `+254${phoneNumber}`,
-          })
-          .then(async (signUpAttempt) => {
-            if (signUpAttempt?.status === "missing_requirements") {
-              await signUp?.preparePhoneNumberVerification({
-                strategy: "phone_code",
-              });
-              router.push({
-                pathname: "/(auth)/otp",
-                params: { phone: phoneNumber, type: "signUp" },
-              });
-            } else if (signUpAttempt?.status === "complete") {
-              setActive!({ session: signUpAttempt.createdSessionId });
-              router.replace({
-                pathname: "/(tabs)",
-              });
-            }
-          })
-          .catch((err) => {
-            console.log("signUpError", JSON.stringify(err, null, 2));
-          });
-      }
-    } finally {
-      setLoading(false);
+    if (stashedPhone && !phoneNumber) {
+      setPhoneNumber(stashedPhone);
     }
-  };
+  }, [stashedPhone]);
 
   return (
     <SafeAreaView>
@@ -137,7 +71,10 @@ export default function SignInScreen() {
           source={{
             uri: "https://assets.ezifarmer.com/ezifresh.png",
           }}
-          className="h-16 w-full object-contain"
+          className={cn(
+            "h-16 w-full object-contain",
+            isKeyboardVisible && "absolute top-20",
+          )}
           resizeMode="contain"
         />
         <View className="flex w-full flex-col gap-3">
@@ -145,13 +82,18 @@ export default function SignInScreen() {
             placeholder="Phone Number"
             value={phoneNumber}
             onChangeText={setPhoneNumber}
-            error={errors.phone}
+            error={error || ""}
             countryCode={countryCode}
             setCountryCode={setCountryCode}
           />
         </View>
 
-        <View className="w-full items-center justify-center gap-4">
+        <View
+          className={cn(
+            "w-full items-center justify-center gap-4",
+            isKeyboardVisible && "absolute bottom-10",
+          )}
+        >
           <View className="flex flex-row flex-wrap items-center gap-1">
             <Text className="text-muted-foreground">
               By continuing, you agree to our
@@ -163,7 +105,10 @@ export default function SignInScreen() {
           <Button
             size="lg"
             className="flex w-full items-center rounded-xl"
-            onPress={onSubmit}
+            onPress={() => {
+              setStashedPhone(phoneNumber);
+              handleSignIn();
+            }}
           >
             {loading ? (
               <ActivityIndicator color="white" />

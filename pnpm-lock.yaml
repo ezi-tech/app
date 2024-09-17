@@ -51,6 +51,9 @@ importers:
 
   .:
     devDependencies:
+      '@clerk/types':
+        specifier: ^4.21.0
+        version: 4.21.0
       '@ezi/prettier-config':
         specifier: workspace:*
         version: link:tooling/prettier
@@ -1387,6 +1390,10 @@ packages:
 
   '@clerk/types@4.20.1':
     resolution: {integrity: sha512-s2v3wFgLsB+d0Ot5yN+5IjRNKWl63AAeEczTZDZYSWuNkGihvEXYjS2NtnYuhROBRgWEHEsm0JOp0rQkfTMkBw==}
+    engines: {node: '>=18.17.0'}
+
+  '@clerk/types@4.21.0':
+    resolution: {integrity: sha512-yyPNF4agzub9zXOht9Bk8HG+OkHfLKIpsQuTCiZJszehcKNUqKvJZRxUwdRREBYnBdMl632PKCwbckZsChVxVQ==}
     engines: {node: '>=18.17.0'}
 
   '@coinbase/wallet-sdk@4.0.4':
@@ -9340,6 +9347,10 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
 
   '@clerk/types@4.20.1':
+    dependencies:
+      csstype: 3.1.1
+
+  '@clerk/types@4.21.0':
     dependencies:
       csstype: 3.1.1
 
