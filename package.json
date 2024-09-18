@@ -15,11 +15,16 @@
   "packageManager": "pnpm@9.10.0",
   "devDependencies": {
     "@clerk/types": "^4.21.0",
+    "@ezi/api": "workspace:^",
     "@ezi/prettier-config": "workspace:*",
+    "@ezi/tsconfig": "workspace:^",
     "@turbo/gen": "^2.1.1",
+    "@types/google.maps": "^3.43.3",
+    "@types/node": "^22.5.5",
     "prettier": "catalog:",
     "turbo": "^2.1.1",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "zod": "^3.23.8"
   },
   "prettier": "@ezi/prettier-config"
 }

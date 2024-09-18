@@ -1,15 +1,15 @@
 import { defineConfig } from "drizzle-kit";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is required");
+if (!process.env.POSTGRES_URL) {
+  throw new Error("Missing POSTGRES_URL");
 }
 
+const nonPoolingUrl = process.env.POSTGRES_URL.replace(":6543", ":5432");
+
 export default defineConfig({
-  schema: "./schema.ts",
+  schema: "./src/schema.ts",
   dialect: "postgresql",
-  dbCredentials: {
-    url: process.env.DATABASE_URL,
-  },
+  dbCredentials: { url: nonPoolingUrl },
   verbose: true,
   strict: true,
 });

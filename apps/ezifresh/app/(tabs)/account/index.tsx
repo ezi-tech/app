@@ -13,10 +13,9 @@ import {
   MapPinIcon,
   NotepadTextIcon,
   PackageIcon,
-  SettingsIcon,
   UserIcon,
 } from "lucide-react-native";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const menuItems = [
@@ -36,11 +35,6 @@ const menuItems = [
     route: "/account/addresses",
   },
   {
-    title: "Settings",
-    icon: iconWithClassName(SettingsIcon),
-    route: "/account/settings",
-  },
-  {
     title: "Support",
     icon: iconWithClassName(HelpCircleIcon),
     route: "/account/support",
@@ -51,14 +45,14 @@ const menuItems = [
     route: "/account/about",
   },
   {
-    title: "Terms & Conditions",
-    icon: iconWithClassName(NotepadTextIcon),
-    route: "/account/terms",
-  },
-  {
     title: "Privacy Policy",
     icon: iconWithClassName(LockKeyholeIcon),
     route: "/account/privacy",
+  },
+  {
+    title: "Terms & Conditions",
+    icon: iconWithClassName(NotepadTextIcon),
+    route: "/account/terms",
   },
 ];
 
@@ -74,54 +68,85 @@ export default function MoreScreen() {
   const lastInitial = userNameParts?.[userNameParts.length - 1]?.[0];
 
   return (
-    <SafeAreaView>
-      <View className="grid gap-4 p-4">
-        <Card className="flex w-full flex-row items-center gap-4 rounded-2xl p-4">
+    <View className="h-full w-full bg-white">
+      <SafeAreaView className="h-full">
+        <View
+          className={cn(
+            "flex w-full flex-row items-center gap-4 border-b border-border/60 bg-white",
+            Platform.OS === "ios" ? "px-5 pb-6" : "p-5 pb-6",
+          )}
+        >
           <Avatar alt="Avatar" className="h-16 w-16">
-            <AvatarFallback>
-              <Text className="text-xl">
+            <AvatarFallback className="border-2 border-primary">
+              <Text className="text-2xl">
                 {firstInitial}
                 {lastInitial}
               </Text>
             </AvatarFallback>
           </Avatar>
           <View>
-            <Text className="text-2xl font-asap-semibold">
+            <Text className="font-asap-medium text-2xl">
               {user?.fullName}
             </Text>
-            <Text className="text-muted-foreground">
+            <Text className="text-lg text-muted-foreground">
               {user?.phoneNumbers[0].phoneNumber}
             </Text>
           </View>
-        </Card>
-        <Card className="w-full rounded-2xl">
-          {menuItems.map((item, idx) => (
-            <Pressable
-              key={item.title}
-              className={cn(
-                "flex flex-row items-center gap-4 border-muted p-4",
-                idx !== menuItems.length - 1 && "border-b",
-              )}
-              onPress={() => router.push(item.route as Href<string | object>)}
-            >
-              <item.icon className="h-12 w-12 text-foreground/80" />
-              <Text className="text-lg">{item.title}</Text>
-            </Pressable>
-          ))}
-        </Card>
-        <Pressable onPress={() => signOut()}>
-          <Card className="w-full rounded-2xl">
-            <View
-              className={cn(
-                "flex flex-row items-center gap-4 border-muted p-4",
-              )}
-            >
-              <LogOut className="h-12 w-12 text-red-500" />
-              <Text className="text-xl text-red-500">Log Out</Text>
+        </View>
+        <ScrollView className="h-full bg-muted">
+          <View className="flex gap-2 p-4">
+            <Card className="w-full rounded-xl border-border/60 shadow shadow-foreground/5">
+              {menuItems.map((item, idx) => (
+                <Pressable
+                  key={item.title}
+                  className={cn(
+                    "flex flex-row items-center gap-5 border-muted p-5",
+                    idx !== menuItems.length - 1 && "border-b",
+                  )}
+                  onPress={() =>
+                    router.push(item.route as Href<string | object>)
+                  }
+                >
+                  <item.icon
+                    strokeWidth={1.5}
+                    className="h-12 w-12 text-muted-foreground"
+                  />
+                  <Text className="font-asap-medium text-xl">{item.title}</Text>
+                </Pressable>
+              ))}
+            </Card>
+            <Card className="w-full rounded-xl border-border/60 shadow-foreground/5">
+              <Pressable onPress={() => signOut()}>
+                <View
+                  className={cn(
+                    "flex flex-row items-center gap-5 border-muted p-5",
+                  )}
+                >
+                  <LogOut
+                    strokeWidth={1.5}
+                    className="h-12 w-12 text-red-500"
+                  />
+                  <Text className="font-asap-medium text-xl text-red-500">
+                    Log Out
+                  </Text>
+                </View>
+              </Pressable>
+            </Card>
+
+            <View className="mb-20 mt-4 gap-1">
+              <Text className="text-center text-muted-foreground">
+                Version 1.0.0
+              </Text>
+              <Text className="text-center text-muted-foreground">
+                © {new Date().getFullYear()} Ezifarmer Technologies Ltd. All
+                rights reserved.
+              </Text>
             </View>
-          </Card>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+          </View>
+
+          <View className="h-20" />
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }

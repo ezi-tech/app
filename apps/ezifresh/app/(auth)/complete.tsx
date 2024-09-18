@@ -36,7 +36,7 @@ export default function CompleteProfileScreen() {
 
       if (res?.status === "complete") {
         await setActive!({ session: res.createdSessionId });
-        router.replace("/(tabs)");
+        router.replace("/(tabs)/home");
       }
     } catch (err: any) {
       console.log("completeError", JSON.stringify(err, null, 2));
@@ -51,60 +51,62 @@ export default function CompleteProfileScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full gap-8 bg-white px-8 py-12">
-        <View className="flex w-full flex-col gap-y-8">
-          <View className="relative flex w-full flex-row items-center justify-start">
-            <View className="absolute left-0">
-              <ArrowLeft color="black" onPress={() => router.back()} />
+      <View className="flex h-full w-full bg-white py-12">
+        <View className="absolute top-12 gap-8 px-6">
+          <View className="flex w-full flex-col gap-y-8">
+            <View className="relative flex w-full flex-row items-center justify-start">
+              <View className="absolute left-0">
+                <ArrowLeft color="black" onPress={() => router.replace("/(auth)/")} />
+              </View>
+              <Text className="font-asap-semibold mx-auto text-center text-2xl">
+                Complete profile
+              </Text>
             </View>
-            <Text className="font-asap-semibold mx-auto text-center text-2xl">
-              Complete profile
+            <Text className="text-xl text-muted-foreground">
+              Please enter your personal details to complete your profile
             </Text>
           </View>
-          <Text className="text-xl text-muted-foreground">
-            Please enter your personal details to complete your profile
-          </Text>
-        </View>
-        <View className="flex gap-4">
-          <View className="flex flex-row items-center gap-4">
+          <View className="flex gap-4">
+            <View className="flex flex-row items-center gap-4">
+              <TextField
+                placeholder="First name"
+                value={firstName}
+                onChangeText={setFirstName}
+                className="flex-1"
+              />
+              <TextField
+                placeholder="Last name"
+                value={lastName}
+                onChangeText={setLastName}
+                className="flex-1"
+              />
+            </View>
+
             <TextField
-              placeholder="First name"
-              value={firstName}
-              onChangeText={setFirstName}
-              className="flex-1"
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
             />
-            <TextField
-              placeholder="Last name"
-              value={lastName}
-              onChangeText={setLastName}
-              className="flex-1"
-            />
+
+            {error && <Text className="text-red-500">{error}</Text>}
           </View>
-
-          <TextField
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-
-          {error && <Text className="text-red-500">{error}</Text>}
         </View>
 
-        <View className="mt-4 flex gap-4">
-          <Text className="text-muted-foreground">
+        <View className="absolute bottom-8 mx-auto flex w-full gap-4 px-6">
+          <Text className="text-center text-sm text-muted-foreground">
             We may use your email to send occasional offers and promotions. You
             can unsubscribe at any time.
           </Text>
           <Button
             size="lg"
-            className="flex w-full items-center rounded-xl"
+            className="native:h-16 flex w-full items-center justify-center rounded-full"
             onPress={onSubmit}
             disabled={!firstName || !lastName || !email}
           >
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text>Complete</Text>
+              <Text className="font-asap-medium native:text-xl">Complete</Text>
             )}
           </Button>
         </View>

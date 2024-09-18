@@ -9,6 +9,8 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
+  Pressable,
   SafeAreaView,
   TextInput,
   View,
@@ -66,18 +68,15 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full flex-col items-center justify-center gap-36 bg-white p-8">
-        <Image
-          source={{
-            uri: "https://assets.ezifarmer.com/ezifresh.png",
-          }}
-          className={cn(
-            "h-16 w-full object-contain",
-            isKeyboardVisible && "absolute top-20",
-          )}
-          resizeMode="contain"
-        />
-        <View className="flex w-full flex-col gap-3">
+      <Pressable onPress={() => Keyboard.dismiss()}>
+        <View className="flex h-full w-full flex-col items-center justify-center bg-white p-8">
+          <Image
+            source={{
+              uri: "https://assets.ezifarmer.com/ezifresh.png",
+            }}
+            className={cn("absolute top-24 h-16 w-full object-contain")}
+            resizeMode="contain"
+          />
           <PhoneInput
             placeholder="Phone Number"
             value={phoneNumber}
@@ -86,38 +85,41 @@ export default function SignInScreen() {
             countryCode={countryCode}
             setCountryCode={setCountryCode}
           />
-        </View>
-
-        <View
-          className={cn(
-            "w-full items-center justify-center gap-4",
-            isKeyboardVisible && "absolute bottom-10",
-          )}
-        >
-          <View className="flex flex-row flex-wrap items-center gap-1">
-            <Text className="text-muted-foreground">
-              By continuing, you agree to our
-            </Text>
-            <Text className="text-muted-foreground underline">
-              Terms of Service
-            </Text>
-          </View>
-          <Button
-            size="lg"
-            className="flex w-full items-center rounded-xl"
-            onPress={() => {
-              setStashedPhone(phoneNumber);
-              handleSignIn();
-            }}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text>Continue</Text>
+          <View
+            className={cn(
+              "absolute bottom-8 w-full items-center justify-center gap-4",
             )}
-          </Button>
+          >
+            <Text className="text-center text-muted-foreground">
+              If you sign up,{" "}
+              <Text className="text-muted-foreground underline">
+                Terms of Service
+              </Text>{" "}
+              and{" "}
+              <Text className="text-muted-foreground underline">
+                Privacy Policy
+              </Text>{" "}
+              apply
+            </Text>
+            <Button
+              size="lg"
+              className="native:h-16 flex w-full items-center justify-center rounded-full"
+              onPress={() => {
+                setStashedPhone(phoneNumber);
+                handleSignIn();
+              }}
+            >
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text className="font-asap-medium native:text-xl">
+                  Continue
+                </Text>
+              )}
+            </Button>
+          </View>
         </View>
-      </View>
+      </Pressable>
     </SafeAreaView>
   );
 }

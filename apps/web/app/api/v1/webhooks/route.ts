@@ -1,14 +1,17 @@
 import { getSMSClient } from "@/lib/africastalking";
+import { getEnv } from "@/lib/middleware/utils";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
-import { db, users } from "@ezi/database";
+import { db } from "@ezi/database/client";
+import { User } from "@ezi/database/schema";
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
 
   if (!WEBHOOK_SECRET) {
+    console.error("Missing WEBHOOK_SECRET environment variable");
     throw new Error("Missing WEBHOOK_SECRET environment variable");
   }
 
@@ -56,7 +59,7 @@ export async function POST(req: Request) {
         const email = user.email_addresses[0].email_address;
         const phone = user.phone_numbers[0].phone_number;
 
-        await db.insert(users).values({
+        await db.insert(User).values({
           id: user.id,
           name,
           email,
@@ -68,12 +71,16 @@ export async function POST(req: Request) {
       case "sms.created": {
         const sms = evt.data;
         const client = getSMSClient();
+        const isTestPhone = sms.to_phone_number.startsWith("+15555550");
 
-        await client.SMS.send({
-          from: process.env.AT_SENDER_ID || "EZITECH",
-          to: [sms.to_phone_number],
-          message: sms.message,
-        });
+        if (!isTestPhone) {
+          await client.SMS.send({
+            from: process.env.AT_SENDER_ID || "EZITECH",
+            to: [sms.to_phone_number],
+            message: sms.message,
+          });
+        }
+
         break;
       }
     }

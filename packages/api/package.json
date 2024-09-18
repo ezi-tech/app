@@ -1,0 +1,25 @@
+{
+  "name": "@ezi/api",
+  "version": "1.0.0",
+  "description": "",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ezi/database": "workspace:^",
+    "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@trpc/server": "catalog:",
+    "drizzle-zod": "^0.5.1",
+    "superjson": "^2.2.1"
+  },
+  "prettier": "@ezi/prettier-config"
+}

@@ -4,21 +4,19 @@ import {
   Asap_600SemiBold,
   useFonts,
 } from "@expo-google-fonts/asap";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Bootsplash from "react-native-bootsplash";
 
 import "react-native-reanimated";
 import "../global.css";
 
-import Provider from "@/lib/provider";
+import Provider from "@/lib/providers";
 import { useAuth } from "@clerk/clerk-expo";
 import { Slot, useRouter } from "expo-router";
 
 const InitialLayout: React.FC = () => {
-  const { isLoaded, isSignedIn } = useAuth();
-  const [isMounted, setIsMounted] = useState(false);
-
   const router = useRouter();
+  const { isLoaded: authLoaded, isSignedIn } = useAuth();
 
   const [fontsLoaded] = useFonts({
     Asap_400Regular,
@@ -26,26 +24,20 @@ const InitialLayout: React.FC = () => {
     Asap_600SemiBold,
   });
 
-  useEffect(() => {
-    if (fontsLoaded && isLoaded) {
-      setIsMounted(true);
-    }
-  }, [fontsLoaded, isLoaded]);
+  const appIsReady = fontsLoaded && authLoaded;
 
   useEffect(() => {
-    if (!fontsLoaded || !isLoaded || !isMounted) return;
+    if (!appIsReady) return;
+
+    // hide the splash screen
     Bootsplash.hide({ fade: true });
 
     if (isSignedIn) {
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/home");
     } else {
       router.replace("/(auth)");
     }
-  }, [fontsLoaded, isLoaded, isMounted, isSignedIn, router]);
-
-  if (!fontsLoaded || !isLoaded) {
-    return null;
-  }
+  }, [appIsReady, isSignedIn, router]);
 
   return <Slot />;
 };
