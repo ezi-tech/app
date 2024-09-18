@@ -1,4 +1,5 @@
 import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
 import { iconWithClassName } from "@/lib/icons/iconWithClassName";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
@@ -32,6 +33,7 @@ import { useProducts } from "@ezi/shopify";
 export default function HomeScreen() {
   const { signOut } = useAuth();
   const [value, onChangeText] = React.useState("");
+
   return (
     <View className={cn("h-full w-full bg-white pt-2")}>
       <SafeAreaView
@@ -69,17 +71,21 @@ const ChangeLocation = () => {
   iconWithClassName(ChevronRightIcon);
 
   const router = useRouter();
+  const { data, isLoading } = api.address.default.useQuery();
 
   return (
     <TouchableOpacity onPress={() => router.push("/home/location")}>
       <View className="flex w-full flex-row items-center gap-2 px-5">
-        <MapPin size={24} strokeWidth={2} className="text-foreground" />
-        <Text className="justify-center text-xl text-foreground">
-          Naina 4, 1st Floor, Gitaru Kenya
-        </Text>
+        <MapPin size={28} strokeWidth={1.8} className="text-foreground" />
+        <View>
+          <Text className="text-sm -mb-1 text-muted-foreground">Deliver to</Text>
+          <Text className="justify-center text-xl text-foreground">
+            {isLoading ? "Loading..." : data?.name ?? data?.formattedAddress}
+          </Text>
+        </View>
         <ChevronRightIcon
           size={24}
-          className="ml-auto justify-end self-end text-muted-foreground"
+          className="ml-auto text-muted-foreground"
         />
       </View>
     </TouchableOpacity>

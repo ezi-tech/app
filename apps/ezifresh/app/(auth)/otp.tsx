@@ -34,8 +34,8 @@ export default function OTPScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full items-center justify-center gap-y-16 bg-white py-12">
-        <View className="flex absolute top-12 w-full flex-col gap-y-4 p-3">
+      <View className="flex h-full w-full items-center justify-center gap-y-16 bg-white">
+        <View className="flex absolute top-0 w-full flex-col gap-y-4 p-3">
           <View className="relative flex w-full flex-row items-center justify-start">
             <View className="absolute left-0">
               <ArrowLeft
@@ -106,7 +106,7 @@ export default function OTPScreen() {
           </Button>
           {timer === 0 ? (
             <TouchableOpacity onPress={resendOtp}>
-              <Text className="text-center text-lg font-semibold">
+              <Text className="text-center text-lg">
                 Resend OTP
               </Text>
             </TouchableOpacity>

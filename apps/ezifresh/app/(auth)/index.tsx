@@ -9,9 +9,11 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
+  Pressable,
   SafeAreaView,
   TextInput,
-  View
+  View,
 } from "react-native";
 
 interface InputFieldProps {
@@ -66,55 +68,58 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView>
-      <View className="flex h-full w-full flex-col items-center justify-center bg-white p-8">
-        <Image
-          source={{
-            uri: "https://assets.ezifarmer.com/ezifresh.png",
-          }}
-          className={cn("absolute top-24 h-16 w-full object-contain")}
-          resizeMode="contain"
-        />
-        <PhoneInput
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          error={error || ""}
-          countryCode={countryCode}
-          setCountryCode={setCountryCode}
-        />
-
-        <View
-          className={cn(
-            "absolute bottom-8 w-full items-center justify-center gap-4",
-          )}
-        >
-          <Text className="text-center text-muted-foreground">
-            If you sign up,{" "}
-            <Text className="text-muted-foreground underline">
-              Terms of Service
-            </Text>{" "}
-            and{" "}
-            <Text className="text-muted-foreground underline">
-              Privacy Policy
-            </Text>{" "}
-            apply
-          </Text>
-          <Button
-            size="lg"
-            className="native:h-16 flex w-full items-center justify-center rounded-full"
-            onPress={() => {
-              setStashedPhone(phoneNumber);
-              handleSignIn();
+      <Pressable onPress={() => Keyboard.dismiss()}>
+        <View className="flex h-full w-full flex-col items-center justify-center bg-white p-8">
+          <Image
+            source={{
+              uri: "https://assets.ezifarmer.com/ezifresh.png",
             }}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="font-asap-medium native:text-xl">Continue</Text>
+            className={cn("absolute top-24 h-16 w-full object-contain")}
+            resizeMode="contain"
+          />
+          <PhoneInput
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            error={error || ""}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
+          />
+          <View
+            className={cn(
+              "absolute bottom-8 w-full items-center justify-center gap-4",
             )}
-          </Button>
+          >
+            <Text className="text-center text-muted-foreground">
+              If you sign up,{" "}
+              <Text className="text-muted-foreground underline">
+                Terms of Service
+              </Text>{" "}
+              and{" "}
+              <Text className="text-muted-foreground underline">
+                Privacy Policy
+              </Text>{" "}
+              apply
+            </Text>
+            <Button
+              size="lg"
+              className="native:h-16 flex w-full items-center justify-center rounded-full"
+              onPress={() => {
+                setStashedPhone(phoneNumber);
+                handleSignIn();
+              }}
+            >
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text className="font-asap-medium native:text-xl">
+                  Continue
+                </Text>
+              )}
+            </Button>
+          </View>
         </View>
-      </View>
+      </Pressable>
     </SafeAreaView>
   );
 }

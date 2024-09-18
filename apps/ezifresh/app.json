@@ -14,8 +14,8 @@
         "policy": "appVersion"
       },
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "We will use it to determine your delivery address automatically",
-        "NSLocationWhenInUseUsageDescription": "We will use it to determine your delivery address automatically",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We will use your location to determine your delivery address automatically",
+        "NSLocationWhenInUseUsageDescription": "We will use your location to determine your delivery address automatically",
         "UIViewControllerBasedStatusBarAppearance": true
       }
     },
@@ -37,9 +37,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": {
-            "ios": "We use your location to determine your delivery address automatically"
-          }
+          "locationWhenInUsePermission": "We will use your location to determine your delivery address automatically"
         }
       ],
       [
