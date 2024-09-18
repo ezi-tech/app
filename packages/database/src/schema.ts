@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   numeric,
@@ -20,7 +20,7 @@ export const Address = pgTable(
     updatedAt: timestamp("updatedAt", {
       mode: "date",
       withTimezone: true,
-    }).$onUpdateFn(() => sql`now()`),
+    }).$onUpdate(() => new Date()),
     name: text("name"),
     userId: text("user_id")
       .notNull()
@@ -55,7 +55,7 @@ export const User = pgTable("user", {
   updatedAt: timestamp("updatedAt", {
     mode: "date",
     withTimezone: true,
-  }).$onUpdateFn(() => sql`now()`),
+  }).$onUpdate(() => new Date()),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").notNull().unique(),
