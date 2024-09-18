@@ -3,7 +3,7 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { and, eq } from "@ezi/database";
+import { and, desc, eq } from "@ezi/database";
 import { db } from "@ezi/database/client";
 import { Address, CreateAddressSchema } from "@ezi/database/schema";
 
@@ -22,7 +22,8 @@ export const addressRouter = {
     const results = await db
       .select()
       .from(Address)
-      .where(eq(Address.userId, ctx.userId));
+      .where(eq(Address.userId, ctx.userId))
+      .orderBy(desc(Address.createdAt));
 
     return results;
   }),
@@ -63,7 +64,7 @@ export const addressRouter = {
         params: {
           key: apiKey,
           latlng: `${input.latitude},${input.longitude}`,
-          result_type: [AddressType.sublocality_level_1, AddressType.locality],
+          result_type: [AddressType.locality],
         },
       });
 
@@ -86,19 +87,21 @@ export const addressRouter = {
       return place.name;
     }),
 
-  autocomplete: defaultProcedure.input(z.string()).query(async ({ input }) => {
-    const { apiKey, client } = getMapsConfig();
+  autocomplete: defaultProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const { apiKey, client } = getMapsConfig();
 
-    const response = await client.placeAutocomplete({
-      params: {
-        key: apiKey,
-        input: input,
-        components: ["country:KE"],
-      },
-    });
+      const response = await client.placeAutocomplete({
+        params: {
+          key: apiKey,
+          input: input,
+          components: ["country:KE"],
+        },
+      });
 
-    return response.data.predictions;
-  }),
+      return response.data.predictions;
+    }),
 
   create: defaultProcedure
     .input(CreateAddressSchema)
