@@ -22,7 +22,7 @@ export function withAuth<T = {}>(
   }) => Promise<Response>,
 ) {
   return async (req: NextRequest, { params }: { params: T }) => {
-    const { isSignedIn, token } = await clerkClient.authenticateRequest(req, {
+    const { isSignedIn, token } = await clerkClient().authenticateRequest(req, {
       secretKey: getEnv(req, "CLERK_SECRET_KEY"),
       publishableKey: getPublicEnv(req, "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"),
     });

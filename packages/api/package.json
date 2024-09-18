@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@ezi/database": "workspace:^",
+    "@googlemaps/google-maps-services-js": "^3.4.0",
     "@trpc/server": "catalog:",
     "drizzle-zod": "^0.5.1",
     "superjson": "^2.2.1"

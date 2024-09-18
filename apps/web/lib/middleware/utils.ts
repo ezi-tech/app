@@ -1,7 +1,12 @@
-export const SOKO_HOSTNAMES = ["ezisoko.shop"];
-export const FRESH_HOSTNAMES = ["ezifresh.shop"];
-export const SOKO_API_HOSTNAMES = ["api.ezisoko.shop", "api.dev.ezisoko.shop"];
+export const SOKO_HOSTNAMES = ["ezisoko.shop", "ezisoko.local:3000"];
+export const FRESH_HOSTNAMES = ["ezifresh.shop", "ezifresh.local:3000"];
+export const SOKO_API_HOSTNAMES = [
+  "api.ezisoko.shop",
+  "api.dev.ezisoko.shop",
+  "api.ezisoko.local:3000",
+];
 export const FRESH_API_HOSTNAMES = [
+  "api.ezifresh.local:3000",
   "api.ezifresh.shop",
   "api.dev.ezifresh.shop",
 ];
