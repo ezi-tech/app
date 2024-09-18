@@ -4,7 +4,8 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
-import { db, users } from "@ezi/database";
+import { db } from "@ezi/database/client";
+import { User } from "@ezi/database/schema";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
         const email = user.email_addresses[0].email_address;
         const phone = user.phone_numbers[0].phone_number;
 
-        await db.insert(users).values({
+        await db.insert(User).values({
           id: user.id,
           name,
           email,
