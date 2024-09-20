@@ -9,7 +9,7 @@ export async function sendSMS(phone: string, message: string) {
     throw new Error("Missing AT_API_KEY or AT_USERNAME environment variable");
   }
 
-  return await fetch(url, {
+  return fetch(url, {
     method: "POST",
     headers: {
       apikey,
