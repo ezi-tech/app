@@ -1,5 +1,7 @@
 import { kv } from "@vercel/kv";
 
+export const runtime = "edge";
+
 export async function POST(req: Request) {
   const { phone, hash } = await req.json();
 

@@ -1,12 +1,14 @@
-import { getSMSClient } from "@/lib/africastalking";
+import { sendSMS } from "@/lib/africastalking";
 import { getEnv } from "@/lib/middleware/utils";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 import { kv } from "@vercel/kv";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
 import { db } from "@ezi/database/client";
 import { User } from "@ezi/database/schema";
+
+export const runtime = "edge";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
@@ -71,10 +73,8 @@ export async function POST(req: Request) {
       }
       case "sms.created": {
         const sms = evt.data;
-        const client = getSMSClient();
         const to = sms.to_phone_number;
         const isTestPhone = to.startsWith("+15555550");
-        const from = process.env.AT_SENDER_ID || "EZITECH";
 
         if (isTestPhone) break;
 
@@ -87,11 +87,7 @@ export async function POST(req: Request) {
           message = `<#> ${code} is your ${appName} verification code. Do not share this code with anyone \nID: ${otpHash}`;
         }
 
-        await client.SMS.send({
-          from,
-          to: [to],
-          message,
-        });
+        await sendSMS(to, message);
 
         break;
       }
