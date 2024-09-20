@@ -3,9 +3,10 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { and, desc, eq } from "@ezi/database";
+import { and, desc, eq, sql } from "@ezi/database";
 import { db } from "@ezi/database/client";
 import { Address, CreateAddressSchema } from "@ezi/database/schema";
+import { makePoint } from "@ezi/database/utils";
 
 import { defaultProcedure } from "../trpc";
 import { getMapsConfig } from "../utils/googlemaps";
@@ -23,7 +24,7 @@ export const addressRouter = {
       .select()
       .from(Address)
       .where(eq(Address.userId, ctx.userId))
-      .orderBy(desc(Address.createdAt));
+      .orderBy(desc(Address.createdAt), Address.isDefault);
 
     return results;
   }),
@@ -39,8 +40,7 @@ export const addressRouter = {
     const fallbackAddress: Partial<Address> = {
       id: "default",
       formattedAddress: "Westlands, Nairobi",
-      latitude: "-1.286389",
-      longitude: "36.817223",
+      location: { x: 36.817223, y: -1.286389 },
     };
 
     return defaultAddress || firstAvailableAddress || fallbackAddress;
@@ -125,7 +125,7 @@ export const addressRouter = {
     }),
 
   createFromLatLng: defaultProcedure
-    .input(z.object({ latitude: z.string(), longitude: z.string() }))
+    .input(z.object({ latitude: z.number(), longitude: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const { apiKey, client } = getMapsConfig();
 
@@ -135,8 +135,10 @@ export const addressRouter = {
         .where(
           and(
             eq(Address.userId, ctx.userId),
-            eq(Address.latitude, input.latitude),
-            eq(Address.longitude, input.longitude),
+            sql`ST_Equals(
+              ST_SetSRID(${Address.location}, 4326),
+              ${makePoint(input)}
+            )`,
           ),
         );
 
@@ -188,8 +190,7 @@ export const addressRouter = {
       return db.insert(Address).values({
         name: place.name,
         formattedAddress,
-        latitude: input.latitude,
-        longitude: input.longitude,
+        location: { x: input.longitude, y: input.latitude },
         userId: ctx.userId,
         isDefault: true,
       });
@@ -223,8 +224,7 @@ export const addressRouter = {
       return db.insert(Address).values({
         formattedAddress,
         name: address.name,
-        latitude: latLng.lat.toString(),
-        longitude: latLng.lng.toString(),
+        location: { x: latLng.lng, y: latLng.lat },
         userId: ctx.userId,
         isDefault: true,
       });
