@@ -8,7 +8,7 @@ import { Webhook } from "svix";
 import { db } from "@ezi/database/client";
 import { User } from "@ezi/database/schema";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
