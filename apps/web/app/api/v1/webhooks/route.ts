@@ -1,6 +1,7 @@
 import { getSMSClient } from "@/lib/africastalking";
 import { getEnv } from "@/lib/middleware/utils";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { kv } from "@vercel/kv";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
@@ -71,15 +72,26 @@ export async function POST(req: Request) {
       case "sms.created": {
         const sms = evt.data;
         const client = getSMSClient();
-        const isTestPhone = sms.to_phone_number.startsWith("+15555550");
+        const to = sms.to_phone_number;
+        const isTestPhone = to.startsWith("+15555550");
+        const from = process.env.AT_SENDER_ID || "EZITECH";
 
-        if (!isTestPhone) {
-          await client.SMS.send({
-            from: process.env.AT_SENDER_ID || "EZITECH",
-            to: [sms.to_phone_number],
-            message: sms.message,
-          });
+        if (isTestPhone) break;
+
+        let message = sms.message;
+        const otpHash = await kv.get(`otp_hash:${to}`);
+
+        if (otpHash) {
+          const code = sms.data!.otp_code;
+          const appName = sms.data!.app.name;
+          message = `<#> ${code} is your ${appName} verification code. Do not share this code with anyone \nID: ${otpHash}`;
         }
+
+        await client.SMS.send({
+          from,
+          to: [to],
+          message,
+        });
 
         break;
       }
