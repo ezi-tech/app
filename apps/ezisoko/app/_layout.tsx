@@ -30,13 +30,14 @@ const InitialLayout: React.FC = () => {
   useEffect(() => {
     if (!appIsReady) return;
 
-    if (isSignedIn && onboarded === "true") {
-      router.replace("/(tabs)/home");
-    } else if (!isSignedIn && onboarded === "true") {
-      router.replace("/(auth)");
-    } else {
-      router.replace("/(onboarding)");
-    }
+    // if (isSignedIn && onboarded === "true") {
+    //   router.replace("/(tabs)/home");
+    // } else if (!isSignedIn && onboarded === "true") {
+    //   router.replace("/(auth)");
+    // } else {
+    //   router.replace("/(onboarding)");
+    // }
+    router.replace("/(onboarding)");
   }, [appIsReady, isSignedIn, router]);
 
   return <Slot />;

@@ -1,4 +1,4 @@
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import {View, useWindowDimensions } from 'react-native';
 import React, { useCallback } from 'react';
 import Animated, {
   Extrapolation,
@@ -43,11 +43,11 @@ const PaginationElement = ({ length, x }: Props) => {
         backgroundColor: bgColor,
       };
     }, [x]);
-    return <Animated.View style={[styles.itemStyle, itemRnStyle]} />;
+    return <Animated.View style={[itemRnStyle]} className="w-[35px] h-[6px] rounded-[5px] mx-[3px]"/>;
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View className='flex flex-row items-center justify-center'>
       {Array.from({ length }).map((_, index) => {
         return <PaginationComponent index={index} key={index} />;
       })}
@@ -56,18 +56,3 @@ const PaginationElement = ({ length, x }: Props) => {
 };
 
 export default PaginationElement;
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  itemStyle: {
-    width: 35,
-    height: 10,
-    borderRadius: 5,
-
-    marginHorizontal: 5,
-  },
-});
