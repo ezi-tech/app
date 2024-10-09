@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { Webhook } from "svix";
 
 import { db } from "@ezi/database/client";
-import { User } from "@ezi/database/schema";
+import { Organization, User } from "@ezi/database/schema";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
@@ -64,6 +64,18 @@ export async function POST(req: Request) {
           name,
           email,
           phone,
+        });
+
+        break;
+      }
+      case "organization.created": {
+        const organization = evt.data;
+        const name = organization.name;
+        const id = organization.id;
+
+        await db.insert(Organization).values({
+          id: id,
+          name,
         });
 
         break;
