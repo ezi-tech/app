@@ -24,8 +24,8 @@ import { ChevronRight } from 'lucide-react-native';
     const rnBtnStyle = useAnimatedStyle(() => {
       return {
         width:
-          currentIndex.value === length - 1 ? withSpring(140) : withSpring(60),
-        height: 60,
+          currentIndex.value === length - 1 ? withSpring(140) : withSpring(50),
+        height: 50,
       };
     }, [currentIndex, length]);
   
@@ -67,7 +67,7 @@ import { ChevronRight } from 'lucide-react-native';
       }
     }, []);
     return (
-      <AnimatedPressable style={[rnBtnStyle]} onPress={onPress} className="flex flex-row px-6 py-4 rounded-full bg-[#32B479] items-center justify-center overflow-hidden">
+      <AnimatedPressable style={[rnBtnStyle]} onPress={onPress} className="flex flex-row px-6 py-4 rounded-full bg-[#32B479] items-center justify-center overflow-hidden mb-5">
         <Animated.Text style={[rnTextStyle]} className=" absolute text-white font-semibold text-[16px]">
           Get Started
         </Animated.Text>
