@@ -27,8 +27,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useProducts } from "../../../../../packages/shopify/src/products";
 
-import { useProducts } from "@ezi/shopify";
 
 export default function HomeScreen() {
   const { signOut } = useAuth();
@@ -91,41 +91,6 @@ const ChangeLocation = () => {
     </TouchableOpacity>
   );
 };
-
-// const products: Product[] = [
-//   {
-//     name: "Bananas",
-//     image: "https://picsa.pro/profile.jpg",
-//     price: 10,
-//     time: 50,
-//     rating: 4.5,
-//     ratingCount: 135,
-//   },
-//   {
-//     name: "Mangoes",
-//     image: "https://picsa.pro/profile.jpg",
-//     price: 20,
-//     time: 50,
-//     rating: 4.5,
-//     ratingCount: 235,
-//   },
-//   {
-//     name: "Spinach",
-//     image: "https://picsa.pro/profile.jpg",
-//     price: 20,
-//     time: 50,
-//     rating: 3.5,
-//     ratingCount: 35,
-//   },
-//   {
-//     name: "Tomatoes",
-//     image: "https://picsa.pro/profile.jpg",
-//     price: 20,
-//     time: 50,
-//     rating: 2.5,
-//     ratingCount: 115,
-//   },
-// ];
 
 const ProductsSection = () => {
   const { loading, error, data } = useProducts();

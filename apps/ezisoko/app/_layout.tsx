@@ -1,38 +1,51 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import "../global.css"
+import {
+  Asap_400Regular,
+  Asap_500Medium,
+  Asap_600SemiBold,
+  useFonts,
+} from "@expo-google-fonts/asap";
+import React, { useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
+import "react-native-reanimated";
+import "../global.css";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import Provider from "@/lib/providers";
+import { useAuth } from "@clerk/clerk-expo";
+import { Slot, useRouter } from "expo-router";
+import { useSecureStore } from "@/hooks/useSecureStore";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+const InitialLayout: React.FC = () => {
+  const router = useRouter();
+  const { isLoaded: authLoaded, isSignedIn } = useAuth();
+  const { value: onboarded } = useSecureStore("onboarding");
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  const [fontsLoaded] = useFonts({
+    Asap_400Regular,
+    Asap_500Medium,
+    Asap_600SemiBold,
   });
 
+  const appIsReady = fontsLoaded && authLoaded;
+
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    if (!appIsReady) return;
+
+    if (isSignedIn && onboarded === "true") {
+      router.replace("/(tabs)/home");
+    } else if (!isSignedIn && onboarded === "true") {
+      router.replace("/(auth)");
+    } else {
+      router.replace("/(onboarding)");
     }
-  }, [loaded]);
+  }, [appIsReady, isSignedIn, router]);
 
-  if (!loaded) {
-    return null;
-  }
+  return <Slot />;
+};
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
-  );
-}
+const RootLayout: React.FC = () => (
+  <Provider>
+    <InitialLayout />
+  </Provider>
+);
+
+export default RootLayout;

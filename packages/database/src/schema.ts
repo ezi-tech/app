@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { relations } from "drizzle-orm";
+import { or, relations } from "drizzle-orm";
 import {
   boolean,
   decimal,
@@ -111,6 +111,23 @@ export const User = pgTable("user", {
 
 export const userRelations = relations(User, ({ many }) => ({
   addresses: many(Address),
+  organizations: many(Organization),
+}));
+
+export const Organization = pgTable("organization", {
+  id: text("id").primaryKey().notNull(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  users: text("users").array(),
+  updatedAt: timestamp("updatedAt", {
+    mode: "date",
+    withTimezone: true,
+  }).$onUpdate(() => new Date()),
+
+});
+
+export const OrganizationRelations = relations(Organization, ({ many }) => ({
+  users: many(User),
 }));
 
 export const Store = pgTable(
@@ -264,3 +281,4 @@ export const StoreProductVariantRelations = relations(
 
 export type Address = typeof Address.$inferSelect;
 export type User = typeof User.$inferSelect;
+export type Organization = typeof Organization.$inferSelect;
