@@ -11,6 +11,10 @@
       "types": "./dist/client.d.ts",
       "default": "./src/client.ts"
     },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "default": "./src/utils.ts"
+    },
     "./schema": {
       "types": "./dist/schema.d.ts",
       "default": "./src/schema.ts"
@@ -18,6 +22,7 @@
   },
   "scripts": {
     "push": "pnpm with-env drizzle-kit push",
+    "migrate": "pnpm with-env tsx migrate.ts",
     "studio": "pnpm with-env drizzle-kit studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
