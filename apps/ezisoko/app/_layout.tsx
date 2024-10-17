@@ -5,7 +5,6 @@ import {
   useFonts,
 } from "@expo-google-fonts/asap";
 import React, { useEffect } from "react";
-import * as SecureStore from "expo-secure-store";
 import "react-native-reanimated";
 import "../global.css";
 

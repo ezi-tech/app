@@ -40,7 +40,7 @@ export const Address = pgTable(
     deliveryInstructions: text("delivery_instructions"),
   },
   (t) => ({
-    spatialIndex: index("spatial_index").using("gist", t.location),
+    spatialIndex: index("address_spatial_index").using("gist", t.location),
   }),
 );
 
@@ -84,7 +84,7 @@ export const Region = pgTable(
     }).notNull(),
   },
   (t) => ({
-    spatialIndex: index("spatial_index").using(
+    spatialIndex: index("region_spatial_index").using(
       "gist",
       t.locationNE,
       t.locationSW,
@@ -157,7 +157,7 @@ export const Store = pgTable(
       .references(() => User.id),
   },
   (t) => ({
-    spatialIndex: index("spatial_index").using("gist", t.location),
+    spatialIndex: index("store_spatial_index").using("gist", t.location),
     regionIndex: index("region_index").on(t.regionId),
   }),
 );
