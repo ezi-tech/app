@@ -11,11 +11,11 @@ import { Organization, User } from "@ezi/database/schema";
 // export const runtime = "edge";
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = getEnv(req, "CLERK_WEBHOOK_SECRET");
+  const WEBHOOK_SECRET = getEnv(req, "EZIFRESH_CLERK_WEBHOOK_SECRET");
 
   if (!WEBHOOK_SECRET) {
-    console.error("Missing WEBHOOK_SECRET environment variable");
-    throw new Error("Missing WEBHOOK_SECRET environment variable");
+    console.error("Missing EZIFRESH WEBHOOK_SECRET environment variable");
+    throw new Error("Missing EZIFRESH WEBHOOK_SECRET environment variable");
   }
 
   // Get the headers
@@ -91,13 +91,9 @@ export async function POST(req: Request) {
         if (isTestPhone) break;
 
         let message = sms.message;
-        const otpHash = await kv.get(`otp_hash:${to}`);
-
-        if (otpHash) {
-          const code = sms.data!.otp_code;
-          const appName = sms.data!.app.name;
-          message = `<#> ${code} is your ${appName} verification code. Do not share this code with anyone \nID: ${otpHash}`;
-        }
+        const code = sms.data!.otp_code;
+        const appName = sms.data!.app.name;
+        message = `${code} is your ${appName} verification code. Do not share this code with anyone`;
 
         await sendSMS(to, message);
 
